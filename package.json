@@ -2,14 +2,14 @@
   "name": "monocycle",
   "version": "1.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "src/component.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "ssh://github/Gastonite/monocycle.git"
-  },
-  "author": "",
-  "license": "ISC"
+  "repository": "ssh://github/Gastonite/monocycle.git",
+  "author": "Clément Pasquier <clement@n00sphere.net>",
+  "license": "ISC",
+  "dependencies": {
+    "lodash.isfunction": "^3.0.9"
+  }
 }
