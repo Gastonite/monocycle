@@ -21,6 +21,11 @@ const makeComponent = ({
 
         const method = methods[key]
 
+        console.log('[monocycle]', {
+          key,
+          method
+        })
+
         return !isFunction(method)
           ? before
           : Object.assign({}, before, {

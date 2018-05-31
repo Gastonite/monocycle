@@ -10,6 +10,8 @@
   "author": "Clément Pasquier <clement@n00sphere.net>",
   "license": "ISC",
   "dependencies": {
-    "lodash.isfunction": "^3.0.9"
+    "browser-assert": "^1.2.1",
+    "lodash.isfunction": "^3.0.9",
+    "ramda": "^0.25.0"
   }
 }
