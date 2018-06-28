@@ -11,7 +11,6 @@ const defaultOperators = {
 }
 
 const makeComponent = ({
-  methods = {},
   operators: _operators = defaultOperators,
 } = {}) => {
 

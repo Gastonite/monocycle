@@ -2,7 +2,7 @@
   "name": "monocycle",
   "version": "1.0.1",
   "description": "",
-  "main": "src/component.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,8 +10,12 @@
   "author": "Clément Pasquier <clement@n00sphere.net>",
   "license": "ISC",
   "dependencies": {
+    "@cycle/dom": "^20.4.0",
+    "@cycle/isolate": "^3.3.0",
     "browser-assert": "^1.2.1",
+    "lodash": "^4.17.10",
     "lodash.isfunction": "^3.0.9",
-    "ramda": "^0.25.0"
+    "ramda": "^0.25.0",
+    "xstream": "^11.7.0"
   }
 }
