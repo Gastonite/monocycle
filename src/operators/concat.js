@@ -17,16 +17,15 @@ const ConcatOperator = ({
     assert(combinersKeys.map(key => combiners[key]).every(isFunction),
       `'combiners' only accepts functions`)
 
-    return factory => sources => {
+    return component => sources => {
 
-      const sinks = factory(sources)
+      const sinks = component(sources)
       const otherSinks = otherFactory(sources)
 
       const allKeys = uniq(
         Object.keys(sinks)
           .concat(Object.keys(otherSinks))
       )
-      // console.log('Composite()', { allKeys, combiners, otherCombiners })
 
       return allKeys.reduce((before, key) => {
 
@@ -34,8 +33,6 @@ const ConcatOperator = ({
         const sink = sinks[key]
         const otherSink = otherSinks[key]
         const isConflict = Boolean(sink && otherSink)
-
-        // console.log('Composite[' + key + ']', { isConflict })
 
         return Object.assign({}, before, {
           [key]: isConflict
