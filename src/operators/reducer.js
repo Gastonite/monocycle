@@ -68,8 +68,8 @@ export const WithReducer = (options = {}, override = false) => {
     : options.from
 
   const getReducer$ = !isFunction(from)
-    ? () => $.of(null).mapTo(reducer)
-    : (sinks, sources) => (from(sinks, sources) || $.of(void 0)).map(reducer)
+    ? () => $.of(void 0).mapTo(reducer)
+    : (sinks, sources) => (from(sinks, sources) || $.empty()).map(reducer)
 
   return WithListener({
     from: (sinks, sources) => {
