@@ -1,7 +1,9 @@
+import $ from "xstream"
 import assert from 'browser-assert'
 import isFunction from "lodash.isfunction"
 import uniq from "ramda/src/uniq"
 import identity from "ramda/src/identity"
+import { div } from '@cycle/dom';
 
 const ConcatOperator = ({
   defaultCombiner = identity,
@@ -11,7 +13,7 @@ const ConcatOperator = ({
   const concatOperator = (otherFactory = Component.empty, otherCombiners = {}) => {
 
     const combiners = Object.assign({}, defaultCombiners, otherCombiners)
-  
+
     const combinersKeys = Object.keys(combiners)
 
     assert(combinersKeys.map(key => combiners[key]).every(isFunction),
@@ -33,10 +35,15 @@ const ConcatOperator = ({
         const sink = sinks[key]
         const otherSink = otherSinks[key]
         const isConflict = Boolean(sink && otherSink)
-
+        let returned
         return Object.assign({}, before, {
           [key]: isConflict
-            ? combiner(sink, otherSink)
+            ? (
+              returned = combiner(sink, otherSink),
+              !isFunction(returned)
+                ? returned
+                : returned(sources)
+            )
             : otherSink || sink
         })
 
@@ -46,5 +53,6 @@ const ConcatOperator = ({
 
   return concatOperator
 }
+
 
 export default ConcatOperator

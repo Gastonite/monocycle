@@ -12,9 +12,16 @@
     snabbdom-selector "^3.0.0"
     xstream "11.x"
 
-"@cycle/isolate@^3.3.0":
+"@cycle/isolate@>=3", "@cycle/isolate@^3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@cycle/isolate/-/isolate-3.3.0.tgz#f23c9dfe0ac604240addf915693c4e78fef2fd28"
+
+"@cycle/run@*":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@cycle/run/-/run-4.4.0.tgz#8013702548b1992f665b9f2f42882996871ccf8f"
+  dependencies:
+    quicktask "1.1.0"
+    xstream "10.x || 11.x"
 
 "@cycle/run@4.0.0":
   version "4.0.0"
@@ -25,6 +32,20 @@
 browser-assert@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/browser-assert/-/browser-assert-1.2.1.tgz#9aaa5a2a8c74685c2ae05bfe46efd606f068c200"
+
+cycle-onionify@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/cycle-onionify/-/cycle-onionify-4.0.0.tgz#9aeddd88dedf6fda9fbb98b1e79ab38810b7ddda"
+  dependencies:
+    "@cycle/isolate" ">=3"
+    "@cycle/run" "*"
+    xstream ">=10"
+
+cyclejs-utils@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/cyclejs-utils/-/cyclejs-utils-3.1.0.tgz#686016d65640ea6b51112eb0d92e6b893272d277"
+  dependencies:
+    cycle-onionify "^4.0.0"
 
 d@1:
   version "1.0.0"
@@ -95,9 +116,23 @@ next-tick@1:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
 
+quicktask@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/quicktask/-/quicktask-1.1.0.tgz#70795fd5922fb122100e662118c73a06aadd7352"
+
+ramda@0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.23.0.tgz#ccd13fff73497a93974e3e86327bfd87bd6e8e2b"
+
 ramda@^0.25.0:
   version "0.25.0"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.25.0.tgz#8fdf68231cffa90bc2f9460390a0cb74a29b29a9"
+
+snabbdom-merge@gastonite/snabbdom-merge#dev:
+  version "0.0.2"
+  resolved "https://codeload.github.com/gastonite/snabbdom-merge/tar.gz/f1df586793e20486430e87b5368c1f81c243ca0d"
+  dependencies:
+    ramda "0.23.0"
 
 snabbdom-selector@^3.0.0:
   version "3.0.0"
@@ -117,7 +152,7 @@ tree-selector@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/tree-selector/-/tree-selector-1.1.0.tgz#e47bbb7174b3040328d04da6c80fcabf8819b129"
 
-"xstream@10.x || 11.x", xstream@11.x, xstream@^11.7.0:
+"xstream@10.x || 11.x", xstream@11.x, xstream@>=10, xstream@^11.7.0:
   version "11.7.0"
   resolved "https://registry.yarnpkg.com/xstream/-/xstream-11.7.0.tgz#6557e9710e1ab05ae28b6902af41745250d32e36"
   dependencies:
