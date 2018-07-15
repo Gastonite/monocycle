@@ -17,6 +17,7 @@
     "lodash": "^4.17.10",
     "lodash.isfunction": "^3.0.9",
     "ramda": "^0.25.0",
+    "snabbdom": "^0.7.1",
     "snabbdom-merge": "gastonite/snabbdom-merge#dev",
     "xstream": "^11.7.0"
   }
