@@ -13,10 +13,13 @@
     xstream "11.x"
 
 "@cycle/isolate@>=3", "@cycle/isolate@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@cycle/isolate/-/isolate-3.3.0.tgz#f23c9dfe0ac604240addf915693c4e78fef2fd28"
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@cycle/isolate/-/isolate-3.4.0.tgz#df693726c9593e5d903309da7dc5692d57720489"
+  dependencies:
+    "@cycle/run" "^4.4.0"
+    xstream "^11.7.0"
 
-"@cycle/run@*":
+"@cycle/run@*", "@cycle/run@^4.4.0":
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/@cycle/run/-/run-4.4.0.tgz#8013702548b1992f665b9f2f42882996871ccf8f"
   dependencies:
@@ -130,7 +133,7 @@ ramda@^0.25.0:
 
 snabbdom-merge@gastonite/snabbdom-merge#dev:
   version "0.0.2"
-  resolved "https://codeload.github.com/gastonite/snabbdom-merge/tar.gz/f1df586793e20486430e87b5368c1f81c243ca0d"
+  resolved "https://codeload.github.com/gastonite/snabbdom-merge/tar.gz/5403dfbff2f6df80998b0216ff2c5103f15105e1"
   dependencies:
     ramda "0.23.0"
 
