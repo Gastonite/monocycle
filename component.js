@@ -1,5 +1,4 @@
-import $ from "xstream"
-import isFunction from 'lodash.isfunction'
+import isFunction from 'lodash/isFunction'
 import pipe from 'ramda/src/pipe'
 import when from 'ramda/src/when'
 import equals from 'ramda/src/equals'
@@ -14,12 +13,12 @@ import assertObject from "./assertions/assertObject"
 import assertFunction from "./assertions/assertFunction"
 import isArray from 'lodash/isArray'
 import { mergeSinks } from "cyclejs-utils"
+import objOf from "ramda/src/objOf"
 import applyTo from "ramda/src/applyTo"
 import before from './operators/before'
 import after from './operators/after'
 
 const Empty = () => ({})
-
 
 const defaultOperators = {
   before,
@@ -47,11 +46,11 @@ const makeComponent = ({
     if (!kind)
       throw new Error(`Please name your component (provided: ${component})`)
 
-    console.log(`Component`, {
-      kind: !name || kind === name
-        ? kind
-        : `${name}(${kind})`
-    })
+    // console.log(`Component`, {
+    //   kind: !name || kind === name
+    //     ? kind
+    //     : `${name}(${kind})`
+    // })
 
     const map = (f, name) => Component(f(component), name)
 
@@ -83,12 +82,9 @@ const makeComponent = ({
     })
   }
 
-
-  const log = message => (x, ...args) => console.log(message, x, ...args) || x
-
   const parseOptions = (options = []) => pipe(
     when(isFunction, Array.of),
-    when(isArray, components => ({ components })),
+    when(isArray, objOf('components')),
     tryCatch(options => {
 
       assertObject(options, 'options')
@@ -106,8 +102,6 @@ const makeComponent = ({
     }, err => {
       throw Object.assign(err, { message: `Invalid Component: ${err.message}` })
     }),
-    // log('parseOptions2'),
-
   )(options)
 
 
@@ -115,11 +109,7 @@ const makeComponent = ({
     parseOptions,
     options => {
 
-      const {
-        components,
-        kind = components.map(property('kind')).join('|')
-      } = options
-
+      const { components } = options
 
       if (isEmpty(components))
         return Component.Empty
@@ -132,18 +122,19 @@ const makeComponent = ({
       if (foundIndex > -1)
         return _cache[foundIndex].component
 
+      options.kind = options.kind || components.map(property('kind')).join('|')
+
       const Composite = sources => {
 
-        console.log('Composite()', components)
+        // console.log('Composite()', components)
+
         return mergeSinks(
           components.map(applyTo(sources)),
           Combiners(options)
         )
       }
 
-      const component = components.length === 1
-        ? Component(components[0])
-        : Component(Composite, kind)
+      const component = Component(Composite, options.kind)
 
       _cache.push({
         components,
