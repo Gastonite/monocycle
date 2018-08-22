@@ -1,3 +1,3 @@
-import isDate from 'lodash/isDate'
+import { types } from 'util'
 
-export default isDate
+export default types.isDate

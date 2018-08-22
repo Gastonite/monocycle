@@ -1,3 +1,4 @@
-import isInteger from 'lodash/isInteger'
 
-export default isInteger
+export default x => Number.isInteger(x)
+  ? x
+  : false

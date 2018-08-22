@@ -1,5 +1,4 @@
-import isArray from 'lodash/isArray'
 
-export default x => isArray(x)
+export default x => Array.isArray(x)
   ? x
   : false

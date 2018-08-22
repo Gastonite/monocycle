@@ -1,3 +1,3 @@
-import isRegExp from 'lodash/isRegExp'
+import isRegExp from 'lodash.isregexp'
 
 export default isRegExp

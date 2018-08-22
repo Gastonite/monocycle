@@ -1,3 +1,3 @@
-import isObject from 'lodash/isObject'
+import { isObject } from 'util'
 
 export default isObject

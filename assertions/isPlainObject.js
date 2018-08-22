@@ -1,5 +1,3 @@
-import isPlainObject from 'lodash/isPlainObject'
+import isPlainObject from 'lodash.isplainobject'
 
-export default x => isPlainObject(x)
-  ? x
-  : false
+export default isPlainObject

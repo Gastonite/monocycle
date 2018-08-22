@@ -1,3 +1,4 @@
-import isString from 'lodash/isString'
 
-export default isString
+export default x => typeof x === 'string'
+  ? x
+  : false

@@ -1,3 +1,2 @@
-import isUndefined from 'lodash/isUndefined'
 
-export default isUndefined
+export default x => x === void 0

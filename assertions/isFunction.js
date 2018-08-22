@@ -1,3 +1,5 @@
-import isFunction from 'lodash/isFunction'
+import { isFunction } from 'util'
 
-export default isFunction
+export default x => typeof x === 'function'
+  ? x
+  : false

@@ -1,3 +1,1 @@
-import isNumber from 'lodash/isNumber'
-
-export default isNumber
+export default x => typeof x === 'number'

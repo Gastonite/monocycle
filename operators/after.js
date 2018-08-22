@@ -1,6 +1,6 @@
 import pipe from 'ramda/src/pipe'
 
-const afterOperator = f => {
+export const afterOperator = f => {
   return component => {
 
 

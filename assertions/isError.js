@@ -1,3 +1,3 @@
-import isError from 'lodash/isError'
+import { types } from 'util'
 
-export default isError
+export default types.isNativeError
