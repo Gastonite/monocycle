@@ -3,6 +3,7 @@ import isFunction from './assertions/isFunction'
 import pipe from 'ramda/src/pipe'
 import when from 'ramda/src/when'
 import prop from 'ramda/src/prop'
+import always from 'ramda/src/always'
 import tryCatch from 'ramda/src/tryCatch'
 import property from 'ramda/src/prop'
 import capitalize from './utilities/capitalize'
@@ -20,28 +21,30 @@ import map from "ramda/src/map"
 import before from './operators/before'
 import after from './operators/after'
 
+const noop = always()
 const mapIndexed = addIndex(map)
-
-const Empty = () => ({})
+const EmptyObject = () => ({})
 
 const defaultOperators = {
   before,
   after,
 }
 
+
 export const makeComponent = ({
   operators: _operators = defaultOperators,
+  Empty = EmptyObject,
   Combiners = Empty,
-  childrenKey = 'components'
+  childrenKey = 'components',
+  log = noop,
 } = {}) => {
-
-  // const _cache = []
 
   assertNonEmptyString(childrenKey, 'childrenKey')
 
   _operators = (Object.keys(_operators) || []).reduce((before, key) => {
 
-    // console.log('monocycle', 'defineOperator', key)
+    log('defineOperator', key)
+
     const operator = _operators[key]
 
     return !isFunction(operator) ? before : {
@@ -82,7 +85,6 @@ export const makeComponent = ({
 
     const operators = (Object.keys(_operators) || []).reduce((before, key) => {
 
-      // console.log('monocycle', 'addOperator', key)
       const operator = _operators[key]
 
       return Object.assign({}, before, {
@@ -94,11 +96,12 @@ export const makeComponent = ({
     }, {})
 
     return Object.assign(component, {
+      ...operators,
       isComponent: true,
       kind: kind,
       map,
       concat,
-      ...operators
+      childrenKey,
     })
   }
 
@@ -136,28 +139,20 @@ export const makeComponent = ({
       const { components } = options
       const combiners = Combiners(options)
 
-      // console.log('makeComposite()', options)
+      log('makeComposite()', options)
 
       if (isEmpty(components))
         return Component.Empty
-
-      // const foundIndex = _cache.findIndex(pipe(
-      //   property('components'),
-      //   equals(components)
-      // ))
-
-      // if (foundIndex > -1)
-      //   return _cache[foundIndex].component
 
       options.kind = options.kind || `(${components.map(property('kind')).join('|')})`
 
       const Composite = sources => {
 
-        // console.log('Composite()', {
-        //   kind: options.kind, 
-        //   components,
-        //   combiners
-        // })
+        log('Composite()', {
+          kind: options.kind,
+          components,
+          combiners
+        })
 
         return mergeSinks(
           components.map(applyTo(sources)),
@@ -166,11 +161,6 @@ export const makeComponent = ({
       }
 
       const component = Component(Composite, options.kind)
-
-      // _cache.push({
-      //   components,
-      //   component
-      // })
 
       return component
     }
