@@ -2,20 +2,25 @@ import castArray from 'lodash.castarray'
 import isFunction from './assertions/isFunction'
 import pipe from 'ramda/src/pipe'
 import when from 'ramda/src/when'
-import equals from 'ramda/src/equals'
+import prop from 'ramda/src/prop'
 import tryCatch from 'ramda/src/tryCatch'
 import property from 'ramda/src/prop'
 import capitalize from './utilities/capitalize'
 import assoc from 'ramda/src/assoc'
 import isEmpty from "./assertions/isEmpty"
 import assertObject from "./assertions/assertObject"
+import assertNonEmptyString from "./assertions/assertNonEmptyString"
 import assertFunction from "./assertions/assertFunction"
 import isArray from './assertions/isArray'
 import { mergeSinks } from "cyclejs-utils"
 import objOf from "ramda/src/objOf"
 import applyTo from "ramda/src/applyTo"
+import addIndex from "ramda/src/addIndex"
+import map from "ramda/src/map"
 import before from './operators/before'
 import after from './operators/after'
+
+const mapIndexed = addIndex(map)
 
 const Empty = () => ({})
 
@@ -26,10 +31,13 @@ const defaultOperators = {
 
 export const makeComponent = ({
   operators: _operators = defaultOperators,
-  Combiners = Empty
+  Combiners = Empty,
+  childrenKey = 'components'
 } = {}) => {
 
   // const _cache = []
+
+  assertNonEmptyString(childrenKey, 'childrenKey')
 
   _operators = (Object.keys(_operators) || []).reduce((before, key) => {
 
@@ -94,27 +102,32 @@ export const makeComponent = ({
     })
   }
 
+  const parseChildren = options => assoc(
+    'components',
+    pipe(
+      prop(childrenKey),
+      castArray,
+      mapIndexed(tryCatch(
+        x => Component(x),
+        (err, x, i) => {
+          throw Object.assign(err, {
+            message: `Invalid '${childrenKey}[${i}]' because ${err.message}`
+          })
+        })),
+    )(options),
+    options
+  )
+
   const parseOptions = (options = []) => pipe(
     when(isFunction, Array.of),
-    when(isArray, objOf('components')),
-    tryCatch(options => {
-
-      assertObject(options, 'options')
-
-      const components = castArray(options.components)
-        .map(tryCatch(x => Component(x), (err, x, i) => {
-          err.message = `Invalid 'components[${i}]' because ${err.message}`
-          throw err
-        }))
-
-      return assoc('components', components, options)
-
-    }, err => {
-      throw Object.assign(err, { message: `Invalid Component: ${err.message}` })
+    when(isArray, objOf(childrenKey)),
+    tryCatch(parseChildren, err => {
+      throw Object.assign(err, {
+        message: `Invalid Component options: ${err.message}`
+      })
     }),
   )(options)
 
-  
 
   const makeComposite = pipe(
     parseOptions,
