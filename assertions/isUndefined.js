@@ -1,2 +1,2 @@
 
-export default x => x === void 0
+module.exports = x => x === void 0

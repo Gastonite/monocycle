@@ -1,4 +1,4 @@
-import isNonNegativeInteger from './isNonNegativeInteger'
-import Assertion from './'
+const isNonNegativeInteger = require('./isNonNegativeInteger')
+const { Assertion } = require('.')
 
-export default Assertion(isNonNegativeInteger, 'must be a non-negative integer')
+module.exports = Assertion(isNonNegativeInteger, 'must be a non-negative integer')

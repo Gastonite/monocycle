@@ -1,4 +1,4 @@
-import complement from 'ramda/src/complement'
-import isError from './isError'
+const complement = require('ramda/src/complement')
+const isError = require('./isError')
 
-export default complement(isError)
+module.exports = complement(isError)

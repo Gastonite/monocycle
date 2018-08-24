@@ -1,7 +1,7 @@
-import both from 'ramda/src/both'
-import isNonPositive from './isNonPositive'
-import isInteger from './isInteger'
+const both = require('ramda/src/both')
+const isNotPositive = require('./isNotPositive')
+const isInteger = require('./isInteger')
 
-const isNonPositiveInteger = both(isInteger, isNonPositive)
+const isNonPositiveInteger = both(isInteger, isNotPositive)
 
-export default both(isInteger, isNonPositive)
+module.exports = isNonPositiveInteger

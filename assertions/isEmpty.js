@@ -1,6 +1,6 @@
-import prop from 'ramda/src/prop'
-import isNonPositiveInteger from './isNonPositiveInteger'
+const prop = require('ramda/src/prop')
+const isNonPositiveInteger = require('./isNonPositiveInteger')
 
 const isEmpty = x => isNonPositiveInteger(prop('length', x))
 
-export default isEmpty
+module.exports = isEmpty

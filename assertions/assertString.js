@@ -1,4 +1,4 @@
-import isString from './isString'
-import Assertion from './'
+const isString = require('./isString')
+const { Assertion } = require('.')
 
-export default Assertion(isString, 'must be a string')
+module.exports = Assertion(isString, 'must be a string')

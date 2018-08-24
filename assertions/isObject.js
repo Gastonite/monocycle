@@ -1,3 +1,2 @@
-import { isObject } from 'util'
 
-export default isObject
+module.exports = x => x !== null && typeof x === 'object'

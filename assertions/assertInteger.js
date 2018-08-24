@@ -1,4 +1,4 @@
-import isInteger from './isInteger'
-import Assertion from './'
+const isInteger = require('./isInteger')
+const { Assertion } = require('.')
 
-export default Assertion(isInteger, 'must be an integer')
+module.exports = Assertion(isInteger, 'must be an integer')

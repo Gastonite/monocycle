@@ -1,3 +1,3 @@
-import { types } from 'util'
+const isDate = require('lodash.isdate')
 
-export default types.isDate
+module.exports = isDate

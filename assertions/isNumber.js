@@ -1,1 +1,1 @@
-export default x => typeof x === 'number'
+module.exports = x => typeof x === 'number'

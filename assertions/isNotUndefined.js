@@ -1,4 +1,4 @@
-import complement from 'ramda/src/complement'
-import isUndefined from './isUndefined'
+const complement = require('ramda/src/complement')
+const isUndefined = require('./isUndefined')
 
-export default complement(isUndefined)
+module.exports = complement(isUndefined)

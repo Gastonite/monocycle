@@ -1,4 +1,4 @@
-import isNonEmptyArray from './isNonEmptyArray'
-import Assertion from './'
+const isNonEmptyArray = require('./isNonEmptyArray')
+const { Assertion } = require('.')
 
-export default Assertion(isNonEmptyArray, 'must be a non-empty array')
+module.exports = Assertion(isNonEmptyArray, 'must be a non-empty array')

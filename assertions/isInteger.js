@@ -1,3 +1,3 @@
 
-export default x => Number.isInteger(x)
+module.exports = x => Number.isInteger(x)
   

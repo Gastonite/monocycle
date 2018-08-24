@@ -1,4 +1,4 @@
-import complement from 'ramda/src/complement'
-import isArray from './isArray'
+const complement = require('ramda/src/complement')
+const isArray = require('./isArray')
 
-export default complement(isArray)
+module.exports = complement(isArray)

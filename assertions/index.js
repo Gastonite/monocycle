@@ -1,5 +1,4 @@
-import isObject from './isObject'
-import assert from 'browser-assert'
+const assert = require('browser-assert')
 
 const Assertion = (assertion, defaultMessage) => (input, label = 'input', message = defaultMessage) =>
   assert(
@@ -7,7 +6,8 @@ const Assertion = (assertion, defaultMessage) => (input, label = 'input', messag
     `'${label}' ${message} (provided: ${input && input.toString()})`
   ) || input
 
-export {
-  Assertion as default,
+module.exports = {
+  default: Assertion,
+  Assertion,
   assert
 }

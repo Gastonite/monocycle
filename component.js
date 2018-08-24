@@ -1,25 +1,24 @@
-import castArray from 'lodash.castarray'
-import isFunction from './assertions/isFunction'
-import pipe from 'ramda/src/pipe'
-import when from 'ramda/src/when'
-import prop from 'ramda/src/prop'
-import always from 'ramda/src/always'
-import tryCatch from 'ramda/src/tryCatch'
-import property from 'ramda/src/prop'
-import capitalize from './utilities/capitalize'
-import assoc from 'ramda/src/assoc'
-import isEmpty from "./assertions/isEmpty"
-import assertObject from "./assertions/assertObject"
-import assertNonEmptyString from "./assertions/assertNonEmptyString"
-import assertFunction from "./assertions/assertFunction"
-import isArray from './assertions/isArray'
-import { mergeSinks } from "cyclejs-utils"
-import objOf from "ramda/src/objOf"
-import applyTo from "ramda/src/applyTo"
-import addIndex from "ramda/src/addIndex"
-import map from "ramda/src/map"
-import before from './operators/before'
-import after from './operators/after'
+const castArray = require('lodash.castarray')
+const isFunction = require('./assertions/isFunction')
+const pipe = require('ramda/src/pipe')
+const when = require('ramda/src/when')
+const prop = require('ramda/src/prop')
+const always = require('ramda/src/always')
+const tryCatch = require('ramda/src/tryCatch')
+const property = require('ramda/src/prop')
+const capitalize = require('./utilities/capitalize')
+const assoc = require('ramda/src/assoc')
+const assertObject = require('./assertions/assertObject')
+const assertNonEmptyString = require('./assertions/assertNonEmptyString')
+const assertFunction = require('./assertions/assertFunction')
+const isArray = require('./assertions/isArray')
+const { mergeSinks } = require('cyclejs-utils')
+const objOf = require('ramda/src/objOf')
+const applyTo = require('ramda/src/applyTo')
+const addIndex = require('ramda/src/addIndex')
+const map = require('ramda/src/map')
+const before = require('./operators/before')
+const after = require('./operators/after')
 
 const noop = always()
 const mapIndexed = addIndex(map)
@@ -31,7 +30,7 @@ const defaultOperators = {
 }
 
 
-export const makeComponent = ({
+const makeComponent = ({
   operators: _operators = defaultOperators,
   Empty = EmptyObject,
   Combiners = Empty,
@@ -181,4 +180,7 @@ export const makeComponent = ({
   return makeComposite
 }
 
-export default makeComponent
+module.exports = {
+  default: makeComponent,
+  makeComponent
+}

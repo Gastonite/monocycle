@@ -1,4 +1,4 @@
-import isRegExp from './isRegExp'
-import Assertion from './'
+const isRegExp = require('./isRegExp')
+const { Assertion } = require('.')
 
-export default Assertion(isRegExp, 'must be a RegExp object')
+module.exports = Assertion(isRegExp, 'must be a RegExp object')

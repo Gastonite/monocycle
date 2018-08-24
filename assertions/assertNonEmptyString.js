@@ -1,4 +1,4 @@
-import isNonEmptyString from './isNonEmptyString'
-import Assertion from './'
+const isNonEmptyString = require('./isNonEmptyString')
+const { Assertion } = require('.')
 
-export default Assertion(isNonEmptyString, 'must be a non-empty string')
+module.exports = Assertion(isNonEmptyString, 'must be a non-empty string')

@@ -1,4 +1,4 @@
-import complement from 'ramda/src/complement'
-import isEmpty from './isEmpty'
+const complement = require('ramda/src/complement')
+const isEmpty = require('./isEmpty')
 
-export default complement(isEmpty)
+module.exports = complement(isEmpty)

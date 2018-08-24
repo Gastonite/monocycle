@@ -1,4 +1,4 @@
-import isArray from './isArray'
-import Assertion from '.'
+const isArray = require('./isArray')
+const { Assertion } = require('.')
 
-export default Assertion(isArray, 'must be an array')
+module.exports = Assertion(isArray, 'must be an array')

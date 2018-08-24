@@ -1,5 +1,5 @@
-import both from 'ramda/src/both'
-import isNotEmpty from './isNotEmpty'
-import isString from './isString'
+const both = require('ramda/src/both')
+const isNotEmpty = require('./isNotEmpty')
+const isString = require('./isString')
 
-export default both(isString, isNotEmpty)
+module.exports = both(isString, isNotEmpty)

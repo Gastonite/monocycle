@@ -1,6 +1,6 @@
-import pipe from 'ramda/src/pipe'
+const pipe = require('ramda/src/pipe')
 
-export const beforeOperator = f => {
+const beforeOperator = f => {
   return component => {
 
     const Before = pipe(f, component)
@@ -9,4 +9,6 @@ export const beforeOperator = f => {
   }
 }
 
-export default beforeOperator
+module.exports = {
+  default: beforeOperator
+}

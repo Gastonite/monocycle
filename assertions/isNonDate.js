@@ -1,4 +1,4 @@
-import complement from 'ramda/src/complement'
-import isDate from './isDate'
+const complement = require('ramda/src/complement')
+const isDate = require('./isDate')
 
-export default complement(isDate)
+module.exports = complement(isDate)

@@ -1,4 +1,4 @@
-import isFunction from './isFunction'
-import Assertion from '.'
+const isFunction = require('./isFunction')
+const { Assertion } = require('.')
 
-export default Assertion(isFunction, 'must be a function')
+module.exports = Assertion(isFunction, 'must be a function')

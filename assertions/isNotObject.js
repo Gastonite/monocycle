@@ -1,4 +1,4 @@
-import complement from 'ramda/src/complement'
-import isObject from './isObject'
+const complement = require('ramda/src/complement')
+const isObject = require('./isObject')
 
-export default complement(isObject)
+module.exports = complement(isObject)

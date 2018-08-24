@@ -1,3 +1,3 @@
-import { types } from 'util'
+const isError = require('lodash.iserror')
 
-export default types.isNativeError
+module.exports = isError

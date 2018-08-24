@@ -1,4 +1,4 @@
-import isObject from './isObject'
-import Assertion from '.'
+const isObject = require('./isObject')
+const { Assertion } = require('.')
 
-export default Assertion(isObject, 'must be an object')
+module.exports = Assertion(isObject, 'must be an object')

@@ -1,4 +1,2 @@
 
-export default x => typeof x === 'string'
-  ? x
-  : false
+module.exports = x => typeof x === 'string'
