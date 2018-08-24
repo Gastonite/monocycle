@@ -35,11 +35,11 @@ export const makeComponent = ({
   operators: _operators = defaultOperators,
   Empty = EmptyObject,
   Combiners = Empty,
-  childrenKey = 'components',
+  hasKey = 'has',
   log = noop,
 } = {}) => {
 
-  assertNonEmptyString(childrenKey, 'childrenKey')
+  assertNonEmptyString(hasKey, 'hasKey')
 
   _operators = (Object.keys(_operators) || []).reduce((before, key) => {
 
@@ -74,7 +74,7 @@ export const makeComponent = ({
 
       assertObject(options, 'options')
 
-      return makeComposite(assoc('components', [
+      return makeComposite(assoc(hasKey, [
         component,
         ...castArray(anotherComponent).map((f, i) => {
           assertFunction(f, `anotherComponent[${i}]`, 'must be a dataflow component')
@@ -101,20 +101,19 @@ export const makeComponent = ({
       kind: kind,
       map,
       concat,
-      childrenKey,
     })
   }
 
   const parseChildren = options => assoc(
-    'components',
+    hasKey,
     pipe(
-      prop(childrenKey),
+      prop(hasKey),
       castArray,
       mapIndexed(tryCatch(
         x => Component(x),
         (err, x, i) => {
           throw Object.assign(err, {
-            message: `Invalid '${childrenKey}[${i}]' because ${err.message}`
+            message: `Invalid '${hasKey}[${i}]' because ${err.message}`
           })
         })),
     )(options),
@@ -123,7 +122,7 @@ export const makeComponent = ({
 
   const parseOptions = (options = []) => pipe(
     when(isFunction, Array.of),
-    when(isArray, objOf(childrenKey)),
+    when(isArray, objOf(hasKey)),
     tryCatch(parseChildren, err => {
       throw Object.assign(err, {
         message: `Invalid Component options: ${err.message}`
@@ -136,28 +135,36 @@ export const makeComponent = ({
     parseOptions,
     options => {
 
-      const { components } = options
+      const has = options[hasKey]
       const combiners = Combiners(options)
 
-      log('makeComposite()', options)
+      log('makeComposite()', {
+        combiners,
+        options
+      })
 
-      if (isEmpty(components))
-        return Component.Empty
+      // if (isEmpty(has))
+      //   return Component.Empty
 
-      options.kind = options.kind || `(${components.map(property('kind')).join('|')})`
+      options.kind = options.kind || `(${has.map(property('kind')).join('|')})`
 
       const Composite = sources => {
 
         log('Composite()', {
           kind: options.kind,
-          components,
+          [hasKey]: has,
           combiners
         })
 
-        return mergeSinks(
-          components.map(applyTo(sources)),
-          combiners
-        )
+        return has.length > 1 || has[0] !== Empty
+          ? mergeSinks(
+            has.map(applyTo(sources)),
+            combiners
+          )
+          : Object.keys(combiners).reduce((before, key) => ({
+            ...before,
+            [key]: combiners[key]([])
+          }), {})
       }
 
       const component = Component(Composite, options.kind)
@@ -167,6 +174,9 @@ export const makeComponent = ({
   )
 
   Component.Empty = makeComposite.Empty = Component(Empty)
+  Component.hasKey = makeComposite.hasKey = hasKey
+  Component.log = makeComposite.log = log
+
 
   return makeComposite
 }
