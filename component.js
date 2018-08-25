@@ -36,6 +36,7 @@ const makeComponent = ({
   Combiners = Empty,
   hasKey = 'has',
   log = noop,
+  strict = true
 } = {}) => {
 
   assertNonEmptyString(hasKey, 'hasKey')
@@ -64,8 +65,7 @@ const makeComponent = ({
 
     kind = component.kind || kind || name
 
-    if (!kind)
-      throw new Error(`Please name your component (provided: ${component})`)
+    strict && assert(kind, `Please name your component (provided: ${component})`)
 
     const map = (f, name) => Component(f(component), name)
 
