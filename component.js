@@ -1,5 +1,6 @@
 const castArray = require('lodash.castarray')
 const isFunction = require('./assertions/isFunction')
+const { assert } = require('./assertions')
 const pipe = require('ramda/src/pipe')
 const when = require('ramda/src/when')
 const prop = require('ramda/src/prop')
@@ -18,15 +19,16 @@ const applyTo = require('ramda/src/applyTo')
 const addIndex = require('ramda/src/addIndex')
 const map = require('ramda/src/map')
 const before = require('./operators/before')
-const after = require('./operators/after')
+const { beforeOperator } = require('./operators/before')
+const { afterOperator } = require('./operators/after')
 
 const noop = always()
 const mapIndexed = addIndex(map)
 const EmptyObject = () => ({})
 
 const defaultOperators = {
-  before,
-  after,
+  before: beforeOperator,
+  after: afterOperator,
 }
 
 
@@ -47,10 +49,9 @@ const makeComponent = ({
 
     const operator = _operators[key]
 
-    return !isFunction(operator) ? before : {
-      ...before,
-      [key]: operator
-    }
+    return !isFunction(operator)
+      ? before
+      : Object.assign(before, { [key]: operator })
   }, {})
 
 
@@ -73,13 +74,16 @@ const makeComponent = ({
 
       assertObject(options, 'options')
 
-      return makeComposite(assoc(hasKey, [
-        component,
-        ...castArray(anotherComponent).map((f, i) => {
-          assertFunction(f, `anotherComponent[${i}]`, 'must be a dataflow component')
-          return f
-        })
-      ], options))
+      return makeComposite(
+        assoc(
+          hasKey,
+          [component].concat(castArray(anotherComponent).map((f, i) => {
+            assertFunction(f, `anotherComponent[${i}]`, 'must be a dataflow component')
+            return f
+          })),
+          options
+        )
+      )
     }
 
     const operators = (Object.keys(_operators) || []).reduce((before, key) => {
@@ -87,15 +91,14 @@ const makeComponent = ({
       const operator = _operators[key]
 
       return Object.assign({}, before, {
-        [key]: pipe(operator, component => map(
-          component,
-          component.kind || capitalize(key)
-        ))
+        [key]: pipe(
+          component => operator(component, makeComposite), 
+          component => map(component, component.kind || capitalize(key))
+        )
       })
     }, {})
 
-    return Object.assign(component, {
-      ...operators,
+    return Object.assign(component, operators, {
       isComponent: true,
       kind: kind,
       map,
@@ -142,9 +145,6 @@ const makeComponent = ({
         options
       })
 
-      // if (isEmpty(has))
-      //   return Component.Empty
-
       options.kind = options.kind || `(${has.map(property('kind')).join('|')})`
 
       const Composite = sources => {
@@ -160,8 +160,7 @@ const makeComponent = ({
             has.map(applyTo(sources)),
             combiners
           )
-          : Object.keys(combiners).reduce((before, key) => ({
-            ...before,
+          : Object.keys(combiners).reduce((before, key) => Object.assign(before, {
             [key]: combiners[key]([])
           }), {})
       }
@@ -182,5 +181,6 @@ const makeComponent = ({
 
 module.exports = {
   default: makeComponent,
-  makeComponent
+  makeComponent,
+  defaultOperators
 }

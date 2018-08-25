@@ -1,6 +1,4 @@
-const toUpper = require('ramda/src/toUpper')
-const replace = require('ramda/src/replace')
 
-const capitalize = replace(/^./, toUpper)
+const capitalize = x => x.charAt(0).toUpperCase() + x.slice(1)
 
 module.exports = capitalize
