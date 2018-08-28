@@ -1,9 +1,10 @@
 const assert = require('browser-assert')
+const stringify = require('../utilities/stringify')
 
 const Assertion = (assertion, defaultMessage) => (input, label = 'input', message = defaultMessage) =>
   assert(
     assertion(input),
-    `'${label}' ${message} (provided: ${input && input.toString()})`
+    `'${label}' ${message} (provided: ${stringify(input)})`
   ) || input
 
 module.exports = {

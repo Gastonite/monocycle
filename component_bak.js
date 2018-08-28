@@ -13,6 +13,7 @@ const assoc = require('ramda/src/assoc')
 const assertObject = require('./assertions/assertObject')
 const assertNonEmptyString = require('./assertions/assertNonEmptyString')
 const assertFunction = require('./assertions/assertFunction')
+const isArray = require('./assertions/isArray')
 const { mergeSinks } = require('cyclejs-utils')
 const objOf = require('ramda/src/objOf')
 const applyTo = require('ramda/src/applyTo')
@@ -25,7 +26,6 @@ const noop = always()
 const mapIndexed = addIndex(map)
 
 const Empty = () => ({})
-
 
 const defaultOperators = {
   before: beforeOperator,
@@ -43,12 +43,6 @@ const makeComponent = ({
 } = {}) => {
 
   assertNonEmptyString(hasKey, 'hasKey')
-
-
-  const coerce = when(
-    isNotPlainObject,
-    objOf(hasKey)
-  )
 
   _operators = (Object.keys(_operators) || []).reduce((before, key) => {
 
@@ -72,8 +66,9 @@ const makeComponent = ({
     if (component.isComponent)
       return component
 
-    log('Component()', {
+    console.log('Component()', {
       kind: kind || component.name,
+      // name: component.name
     })
     const name = component.name || kind
 
@@ -135,25 +130,39 @@ const makeComponent = ({
     options
   )
 
-  const parseCompositeOptions = pipe(
-    coerce,
+  const parseOptions = (options = []) => pipe(
+    when(isFunction, Array.of),
+    when(isArray, objOf(hasKey)),
     tryCatch(parseChildren, err => {
       throw Object.assign(err, {
         message: `Invalid Component options: ${err.message}`
       })
-    })
-  )
+    }),
+  )(options)
 
 
-  const makeComposite = (options = [], kind) => {
+  const makeComposite = (options, kind) => {
+    
+    options = parseOptions(options)
 
-    const { has } = options = parseCompositeOptions(options)
-
+    const has = options[hasKey]
     const combiners = Combiners(options)
 
     options.kind = kind || options.kind || `(${has.map(property('kind')).join('|')})`
 
+    // log('makeComposite()', {
+    //   kind: options.kind,
+    //   options
+    // })
+
+
     const Composite = sources => {
+
+      // log('Composite()', {
+      //   kind: options.kind,
+      //   [hasKey]: has,
+      //   combiners
+      // })
 
       return has.length > 1 || has[0] !== EmptyComponent
         ? mergeSinks(
@@ -171,14 +180,16 @@ const makeComponent = ({
   Component.Empty = makeComposite.Empty = Component(EmptyComponent)
   Component.hasKey = makeComposite.hasKey = hasKey
   Component.log = makeComposite.log = log
-  Component.coerce = makeComposite.coerce = coerce
-
+  Component.coerce = makeComposite.coerce = when(
+    isNotPlainObject,
+    objOf(hasKey)
+  )
+  
   return makeComposite
 }
 
 module.exports = {
   default: makeComponent,
   makeComponent,
-  defaultOperators,
-  Empty
+  defaultOperators
 }
