@@ -10,5 +10,6 @@ const beforeOperator = f => {
 }
 
 module.exports = {
-  default: beforeOperator
+  default: beforeOperator,
+  beforeOperator
 }
