@@ -1,7 +1,8 @@
-const castArray = require('lodash.castarray')
-const isFunction = require('./assertions/isFunction')
+const castArray = require('lodash/castArray')
+const isFunction = require('lodash/isFunction')
 const isString = require('./assertions/isString')
 const { assert } = require('./assertions')
+const filter = require('ramda/src/filter')
 const pipe = require('ramda/src/pipe')
 const when = require('ramda/src/when')
 const prop = require('ramda/src/prop')
@@ -15,6 +16,8 @@ const assertNonEmptyString = require('./assertions/assertNonEmptyString')
 const assertFunction = require('./assertions/assertFunction')
 const { mergeSinks } = require('cyclejs-utils')
 const objOf = require('ramda/src/objOf')
+const lensProp = require('ramda/src/lensProp')
+const over = require('ramda/src/over')
 const applyTo = require('ramda/src/applyTo')
 const isNotPlainObject = require('./assertions/isNotPlainObject')
 const addIndex = require('ramda/src/addIndex')
@@ -44,10 +47,12 @@ const makeComponent = ({
 
   assertNonEmptyString(hasKey, 'hasKey')
 
-
-  const coerce = when(
-    isNotPlainObject,
-    objOf(hasKey)
+  const coerce = pipe(
+    when(
+      isNotPlainObject,
+      objOf(hasKey)
+    ),
+    over(lensProp(hasKey), castArray)
   )
 
   _operators = (Object.keys(_operators) || []).reduce((before, key) => {
@@ -72,12 +77,13 @@ const makeComponent = ({
     if (component.isComponent)
       return component
 
-    log('Component()', {
-      kind: kind || component.name,
-    })
     const name = component.name || kind
 
     kind = component.kind || kind || name || 'Unnamed'
+
+    log('Component()', {
+      kind
+    })
 
     enforceName && assert(kind !== 'Unnamed', `Please name your component (provided: ${component})`)
 
@@ -143,7 +149,6 @@ const makeComponent = ({
       })
     })
   )
-
 
   const makeComposite = (options = [], kind) => {
 
