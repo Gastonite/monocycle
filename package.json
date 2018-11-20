@@ -3,8 +3,9 @@
   "version": "1.0.1",
   "description": "",
   "module": "component.js",
+  "main": "component.js",
   "scripts": {
-    "test": "echo \"Tests are coming soon...\" && exit 42",
+    "test": "mocha --ui tdd --timeout 5000 \"./{,!(node_modules)/**/}*.spec.js\"",
     "build": ""
   },
   "repository": "ssh://github/Gastonite/monocycle.git",
@@ -18,16 +19,24 @@
   "dependencies": {
     "browser-assert": "^1.2.1",
     "cyclejs-utils": "^3.2.0",
+    "jsverify": "^0.8.4",
     "lodash.isdate": "^4.0.1",
     "lodash.iserror": "^3.1.1",
     "lodash.isplainobject": "^4.0.6",
     "lodash.isregexp": "^4.0.1",
-    "ramda": "^0.25.0"
+    "ramda": "^0.25.0",
+    "ramda-adjunct": "^2.11.0",
+    "sanctuary": "^0.15.0",
+    "snabbdom-to-html": "^5.1.1"
   },
   "devDependencies": {
+    "@cycle/time": "^0.16.0",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-3": "^6.24.1",
-    "babelify": "^8.0.0"
+    "babelify": "^8.0.0",
+    "cyclejs-test-helpers": "^4.0.0",
+    "mocha": "^5.2.0",
+    "sanctuary-show": "^1.0.0"
   }
 }

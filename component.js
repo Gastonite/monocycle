@@ -1,189 +1,133 @@
-const castArray = require('lodash/castArray')
-const isFunction = require('lodash/isFunction')
-const isString = require('./assertions/isString')
-const { assert } = require('./assertions')
-const filter = require('ramda/src/filter')
-const pipe = require('ramda/src/pipe')
+const { EmptyObject } = require('./utilities/empty')
 const when = require('ramda/src/when')
-const prop = require('ramda/src/prop')
-const always = require('ramda/src/always')
-const tryCatch = require('ramda/src/tryCatch')
-const property = require('ramda/src/prop')
-const capitalize = require('./utilities/capitalize')
-const assoc = require('ramda/src/assoc')
-const assertObject = require('./assertions/assertObject')
-const assertNonEmptyString = require('./assertions/assertNonEmptyString')
-const assertFunction = require('./assertions/assertFunction')
-const { mergeSinks } = require('cyclejs-utils')
-const objOf = require('ramda/src/objOf')
-const lensProp = require('ramda/src/lensProp')
 const over = require('ramda/src/over')
 const applyTo = require('ramda/src/applyTo')
-const isNotPlainObject = require('./assertions/isNotPlainObject')
-const addIndex = require('ramda/src/addIndex')
 const map = require('ramda/src/map')
-const { beforeOperator } = require('./operators/before')
-const { afterOperator } = require('./operators/after')
-const noop = always()
-const mapIndexed = addIndex(map)
+const filter = require('ramda/src/filter')
+const ifElse = require('ramda/src/ifElse')
+const unless = require('ramda/src/unless')
+const lensProp = require('ramda/src/lensProp')
+const isFunction = require('ramda-adjunct/lib/isFunction').default
+const { mergeSinks } = require('cyclejs-utils')
+const prop = require('ramda/src/prop')
+const both = require('ramda/src/both')
+const pipe = require('ramda/src/pipe')
+const identical = require('ramda/src/identical')
+const concat = require('ramda/src/concat')
+const compose = require('ramda/src/compose')
+const complement = require('ramda/src/complement')
+const always = require('ramda/src/always')
+const lt = require('ramda/src/lt')
+const merge = require('ramda/src/merge')
+const isEmpty = require('ramda/src/isEmpty')
+const ensureArray = require('ramda-adjunct/lib/ensureArray').default
+const isPlainObj = require('ramda-adjunct/lib/isPlainObj').default
+const log = require('./utilities/log').Log('Component')
+const { ensurePlainObj } = require('./utilities/ensurePlainObj')
+const { coerce } = require('./utilities/coerce')
+const different = compose(complement, identical)
 
-const Empty = () => ({})
-
-
-const defaultOperators = {
-  before: beforeOperator,
-  after: afterOperator,
-}
-
-const makeComponent = ({
-  operators: _operators = defaultOperators,
-  EmptyComponent = Empty,
-  Combiners = EmptyComponent,
-  fromString = EmptyComponent,
-  hasKey = 'has',
-  log = noop,
-  enforceName = true
-} = {}) => {
-
-  assertNonEmptyString(hasKey, 'hasKey')
-
-  const coerce = pipe(
-    when(
-      isNotPlainObject,
-      objOf(hasKey)
-    ),
-    over(lensProp(hasKey), castArray)
-  )
-
-  _operators = (Object.keys(_operators) || []).reduce((before, key) => {
-
-    log('defineOperator', key)
-
-    const operator = _operators[key]
-
-    return !isFunction(operator)
-      ? before
-      : Object.assign(before, { [key]: operator })
-  }, {})
+const isComponent = both(isFunction, prop('isComponent'))
+const isComposite = both(isFunction, prop('isComposite'))
 
 
-  const Component = (component = Component.Empty, kind) => {
+const makeComponent = pipe(
+  ensurePlainObj,
+  over(lensProp('makeDefault'), unless(isFunction,
+    always(always(EmptyObject))
+  )),
+  over(lensProp('Combiners'), unless(isFunction,
+    always(EmptyObject)
+  )),
+  options => {
 
-    if (isString(component))
-      return makeComposite(fromString(component))
+    const {
+      Combiners,
+      makeDefault,
+    } = options
 
-    assertFunction(component, 'component', 'must be a dataflow component')
+    // Creates a component from a function
+    const _create = _component => {
 
-    if (component.isComponent)
-      return component
+      _component
 
-    const name = component.name || kind
+      const component = sources => _component(sources)
 
-    kind = component.kind || kind || name || 'Unnamed'
-
-    log('Component()', {
-      kind
-    })
-
-    enforceName && assert(kind !== 'Unnamed', `Please name your component (provided: ${component})`)
-
-    const map = (f, name) => Component(f(component), name)
-
-    const concat = (anotherComponent, options = {}) => {
-
-      assertObject(options, 'options')
-
-      return makeComposite(
-        assoc(
-          hasKey,
-          [component].concat(castArray(anotherComponent).map((f, i) => {
-            assertFunction(f, `anotherComponent[${i}]`, 'must be a dataflow component')
-            return f
-          })),
-          options
-        )
-      )
+      return Object.assign(component, {
+        ..._component,
+        isComponent: true,
+        has: [_component],
+        map: f => _create(f(component)),
+        concat: (others, options = {}) => pipe(
+          ensureArray,
+          filter(isFunction),
+          ifElse(
+            isEmpty,
+            always(component),
+            pipe(
+              concat([component]),
+              coerce,
+              when(always(isPlainObj(options)), merge(options)),
+              Component
+            ),
+          ),
+          _create
+        )(others)
+      })
     }
 
-    const operators = (Object.keys(_operators) || []).reduce((before, key) => {
+    const Component = pipe(
+      coerce,
+      options => {
 
-      const operator = _operators[key]
+        // Creates a composite component from multiple components
+        const _Composite = components => {
 
-      return Object.assign({}, before, {
-        [key]: pipe(
-          component => operator(component, makeComposite),
-          component => map(component, component.kind || capitalize(key))
-        )
-      })
-    }, {})
+          const combiners = Combiners(options)
 
-    return Object.assign(component, operators, {
-      isComponent: true,
-      kind: kind,
-      map,
-      concat,
+          const composite = sources => mergeSinks(
+            components
+              .filter(complement(identical(Component.Empty)))
+              .map(applyTo(sources)),
+            combiners
+          )
+
+          composite.has = components
+          composite.isComposite = true
+
+          return _create(composite)
+        }
+
+        return pipe(
+          ensureArray,
+          map(unless(isFunction, makeDefault)),
+          filter(different(Component.Empty)),
+          map(_create),
+          ifElse(
+            isEmpty,
+            always(Component.Empty),
+            _Composite
+          )
+        )(options.has)
+      }
+    )
+
+
+
+
+    return Object.assign(Component, {
+      Empty: _create(EmptyObject),
+      coerce,
+      isComponent,
+      isComposite
     })
   }
+)
 
-  const parseChildren = options => assoc(
-    hasKey,
-    pipe(
-      prop(hasKey),
-      castArray,
-      mapIndexed(tryCatch(
-        x => Component(x),
-        (err, x, i) => {
-          throw Object.assign(err, {
-            message: `Invalid '${hasKey}[${i}]' because ${err.message}`
-          })
-        })),
-    )(options),
-    options
-  )
-
-  const parseCompositeOptions = pipe(
-    coerce,
-    tryCatch(parseChildren, err => {
-      throw Object.assign(err, {
-        message: `Invalid Component options: ${err.message}`
-      })
-    })
-  )
-
-  const makeComposite = (options = [], kind) => {
-
-    const { has } = options = parseCompositeOptions(options)
-
-    const combiners = Combiners(options)
-
-    options.kind = kind || options.kind || `(${has.map(property('kind')).join('|')})`
-
-    const Composite = sources => {
-
-      return has.length > 1 || has[0] !== EmptyComponent
-        ? mergeSinks(
-          has.map(applyTo(sources)),
-          combiners
-        )
-        : Object.keys(combiners).reduce((before, key) => Object.assign(before, {
-          [key]: combiners[key]([])
-        }), {})
-    }
-
-    return Component(Composite, options.kind)
-  }
-
-  Component.Empty = makeComposite.Empty = Component(EmptyComponent)
-  Component.hasKey = makeComposite.hasKey = hasKey
-  Component.log = makeComposite.log = log
-  Component.coerce = makeComposite.coerce = coerce
-
-  return makeComposite
-}
 
 module.exports = {
   default: makeComponent,
   makeComponent,
-  defaultOperators,
-  Empty
+  isComponent,
+  isComposite
 }
