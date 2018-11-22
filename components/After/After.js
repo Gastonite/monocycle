@@ -2,6 +2,7 @@ const unless = require('ramda/src/unless')
 const { coerce } = require('../../utilities/coerce')
 const isFunction = require('ramda-adjunct/lib/isFunction').default
 const { pipe } = require('../../utilities/pipe');
+const { makeEmptyObject } = require('../../utilities/empty')
 
 const WithAfter = options => {
 
@@ -11,7 +12,6 @@ const WithAfter = options => {
 
   return pipe(
     unless(isFunction, makeEmptyObject),
-    // unless(isFunction, always(identity)),
     component => {
 
       const After = sources => pipe(

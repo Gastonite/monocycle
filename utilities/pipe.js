@@ -1,6 +1,6 @@
-const S = require('sanctuary')
+const RamdaPipe = require('ramda/src/pipe')
 
-const pipe = (firstStep, ...steps) => (...args) => S.pipe(steps)(firstStep(...args))
+const pipe = (firstStep, ...steps) => (firstArg = void 0, ...args) => RamdaPipe(steps)(firstStep(firstArg, ...args))
 
 
 module.exports = {
