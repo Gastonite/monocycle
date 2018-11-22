@@ -8,7 +8,6 @@ const lensProp = require('ramda/src/lensProp')
 const over = require('ramda/src/over')
 const defaultTo = require('ramda/src/defaultTo')
 const when = require('ramda/src/when')
-// const pipe = require('ramda/src/pipe')
 const { isComponent } = require('../../component')
 const objOf = require('ramda/src/objOf')
 const applyTo = require('ramda/src/applyTo')
@@ -33,7 +32,6 @@ const WithDynamic = pipe(
     )
   )
 )
-
 
 module.exports = {
   default: WithDynamic,
