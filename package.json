@@ -10,7 +10,7 @@
   },
   "repository": "ssh://github/Gastonite/monocycle.git",
   "author": "Clément Pasquier <clement@n00sphere.net>",
-  "license": "ISC",
+  "license": "GPL",
   "browserify": {
     "transform": [
       "babelify"
