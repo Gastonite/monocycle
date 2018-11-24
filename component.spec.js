@@ -1,36 +1,21 @@
 
-const { forall, assert, property, nat, Options } = require('jsverify');
-const concat = require('ramda/src/concat');
-const identity = require('ramda/src/identity');
-const equals = require('ramda/src/equals');
-const map = require('ramda/src/map');
-const prop = require('ramda/src/prop');
-const jsc = require('jsverify');
-// const { Cycle } = require('./component2');
-const { makeComponent } = require('./component');
-// const htmlLooksLike = require('html-looks-like');
-// const { Counter } = require('./index');
-// const toHtml = require('snabbdom-to-html'); //snabbdom-to-html's typings are broken
-// const prettifyXml = require('prettify-xml'); //snabbdom-to-html's typings are broken
-// const { Stream: $ } = require('xstream');
-// const { mockDOMSource, VNode } = require('@cycle/dom');
-// const { withState } = require('@cycle/state');
+const { forall, assert, property, nat, Options } = require('jsverify')
+const concat = require('ramda/src/concat')
+const identity = require('ramda/src/identity')
+const map = require('ramda/src/map')
+const prop = require('ramda/src/prop')
+const jsc = require('jsverify')
+const { Component } = require('./component')
 const ensureArray = require('ramda-adjunct/lib/ensureArray').default
 const isFunction = require('ramda-adjunct/lib/isFunction').default
 const pipe = require('ramda/src/pipe')
 const when = require('ramda/src/when')
-const apply = require('ramda/src/apply')
 const filter = require('ramda/src/filter')
-const both = require('ramda/src/both')
 const keys = require('ramda/src/keys')
 const uniq = require('ramda/src/uniq')
-const propEq = require('ramda/src/propEq')
 const always = require('ramda/src/always')
 const flatten = require('ramda/src/flatten')
-const reduce = require('ramda/src/reduce')
-const path = require('ramda/src/path')
-const { diagramArbitrary, withTime } = require('cyclejs-test-helpers');
-const { Stream: $ } = require('xstream');
+const { diagramArbitrary, withTime } = require('cyclejs-test-helpers')
 
 const collectKinds = pipe(
   prop('kind'),
@@ -45,33 +30,7 @@ const collectKinds = pipe(
   flatten
 )
 
-
-
-const isEquivalent1 = (x, y) => {
-  return equals(
-    collectKinds(x),
-    collectKinds(y)
-  )//?
-}
-
-const isEquivalent2 = (x, y) => {
-  return equals(
-    collectKinds(x),
-    collectKinds(y)
-  )//?
-}
-
-
-// property('isEquivalent1', () => {
-//   return isEquivalent1(
-//     c1.concat(c2).concat(c3),
-//     c1.concat(c2.concat(c3))
-//   )
-// })
-
 suite('Component', () => {
-
-  const Component = makeComponent()
 
   const diagramsArb = jsc.dict(diagramArbitrary)
 

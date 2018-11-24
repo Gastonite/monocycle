@@ -45,7 +45,6 @@ const WithListener = pipe(
 
           let sinks = component(sources)
 
-          console.log('sinks', { sinks, listeners })
           sinks = listeners.reduce((sinks, { from, to, combine }) => {
 
             const event$ = (from(sinks, sources) || $.empty())

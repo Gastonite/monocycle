@@ -1,5 +1,5 @@
-const isRegExp = require('../assertions/isRegExp')
-const isUndefined = require('../assertions/isUndefined')
+const isUndefined = require('ramda-adjunct/lib/isUndefined').default
+const isRegExp = require('ramda-adjunct/lib/isRegExp').default
 
 const stringify = state => {
 

@@ -47,18 +47,9 @@ const Log = (options = {}) => {
   }
 
   log.Log = pipe(
-    log.partial('Log1'),
     Log.coerce,
-    log.partial('Log2'),
     over(lensProp('scope'), concat(scope)),
-    log.partial('Log3'),
     Log,
-
-    // (options = {}) => Log({
-    //   ...options,
-    //   log,
-    //   scope: scope + (options.scope)
-    // })
   )
 
   return log
