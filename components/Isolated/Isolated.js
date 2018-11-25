@@ -1,3 +1,4 @@
+const isolate = require('@cycle/isolate').default
 const unless = require('ramda/src/unless')
 const isFunction = require('ramda-adjunct/lib/isFunction').default
 const { pipe } = require('../../utilities/pipe')
