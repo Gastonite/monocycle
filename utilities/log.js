@@ -41,8 +41,8 @@ const Log = (options = {}) => {
   log.partial = (...args) => {
 
     return x => {
-
-      return log(...args, x)
+      log(...args, x)
+      return x
     }
   }
 
