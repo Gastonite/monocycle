@@ -1,8 +1,8 @@
 const { EmptyObject, makeEmptyObject } = require('./utilities/empty')
+const { pipe } = require('./utilities/pipe')
 const when = require('ramda/src/when')
 const reject = require('ramda/src/reject')
 const applyTo = require('ramda/src/applyTo')
-const map = require('ramda/src/map')
 const arrayOf = require('ramda/src/of')
 const filter = require('ramda/src/filter')
 const ifElse = require('ramda/src/ifElse')
@@ -12,7 +12,7 @@ const { mergeSinks } = require('cyclejs-utils')
 const lt = require('ramda/src/lt')
 const prop = require('ramda/src/prop')
 const both = require('ramda/src/both')
-const pipe = require('ramda/src/pipe')
+const RamdaPipe = require('ramda/src/pipe')
 const identical = require('ramda/src/identical')
 const __ = require('ramda/src/__')
 const concat = require('ramda/src/concat')
@@ -28,6 +28,9 @@ const { assign } = require('./utilities/assign')
 const { coerce } = require('./utilities/coerce')
 const different = compose(complement, identical)
 // const log = require('./utilities/log').Log('Component')
+const R = {
+  map: require('ramda/src/map')
+}
 
 const makeComponent = () => {
 
@@ -36,11 +39,21 @@ const makeComponent = () => {
 
     const component = sources => _component(sources)
 
+    const map = f => Component(f(component))
+
     return Object.assign(component, {
       ..._component,
+      ...R.map(
+        makeBehavior => x => pipe(
+          makeBehavior,
+          map
+        )(x),
+        Composite.operators
+      ),
+
       isComponent: true,
       has: [_component],
-      map: f => Component(f(component)),
+      map: map,
       concat: (others, options = {}) => pipe(
         ensureArray,
         filter(isFunction),
@@ -63,15 +76,15 @@ const makeComponent = () => {
   const Composite = pipe(
     coerce,
     options => pipe(
-      map(unless(isFunction, Composite.makeDefault)),
+      R.map(unless(isFunction, Composite.makeDefault)),
       filter(different(Composite.Empty)),
-      map(Component),
+      R.map(Component),
       ifElse(isEmpty,
         always(Composite.Empty),
         pipe(
           reject(identical(Composite.Empty)),
           components => sources => pipe(
-            map(applyTo(sources)),
+            R.map(applyTo(sources)),
             arrayOf,
             concat(__, [Composite.Combiners(options)]),
             apply(mergeSinks)
@@ -85,10 +98,14 @@ const makeComponent = () => {
     )(options.has)
   )
 
-  return Object.assign(Composite, {
-    Empty: Component(EmptyObject),
+  Object.assign(Composite, {
     makeDefault: makeEmptyObject,
-    Combiners: EmptyObject
+    Combiners: EmptyObject,
+    operators: {}
+  })
+
+  return Object.assign(Composite, {
+    Empty: Component(EmptyObject)
   })
 }
 
