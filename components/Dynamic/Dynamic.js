@@ -26,7 +26,8 @@ const WithDynamic = pipe(
       sources => extractSinks(
         (from(component, sources) || $.empty())
           .filter(isComponent)
-          .map(applyTo(sources)),
+          .map(applyTo(sources))
+          .remember(),
         Object.keys(sources)
       )
     )
