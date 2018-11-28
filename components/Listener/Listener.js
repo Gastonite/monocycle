@@ -1,32 +1,30 @@
+const { makeComponent } = require('../../component')
 const { default: $ } = require('xstream')
 const identity = require('ramda/src/identity')
-const pipe = require('ramda/src/pipe')
+const { pipe } = require('../../utilities/pipe')
 const over = require('ramda/src/over')
 const lensProp = require('ramda/src/lensProp')
-const filter = require('ramda/src/filter')
 const map = require('ramda/src/map')
 const unless = require('ramda/src/unless')
 const prop = require('ramda/src/prop')
 const when = require('ramda/src/when')
 const always = require('ramda/src/always')
 const objOf = require('ramda/src/objOf')
-const isObj = require('ramda-adjunct/lib/isObj').default
 const isPlainObj = require('ramda-adjunct/lib/isPlainObj').default
-const ensureArray = require('ramda-adjunct/lib/ensureArray').default
 const isNonEmptyString = require('ramda-adjunct/lib/isNonEmptyString').default
 const isFunction = require('ramda-adjunct/lib/isFunction').default
-const { EmptyObject } = require('../../utilities/empty')
-const { Factory } = require('../../utilities/factory')
-
+const { makeEmptyObject } = require('../../utilities/empty')
+const { coerce } = require('../../utilities/coerce')
 // const log = require('./utilities/log').Log('Listener')
 
-prop.isProp = true
 const defaultCombine = (before, sink$) => sink$
 
 const WithListener = pipe(
-  ensureArray,
-  filter(isObj),
-  map(pipe(
+  coerce,
+  over(lensProp('Component'), pipe(
+    unless(isFunction, () => makeComponent())
+  )),
+  over(lensProp('has'), map(pipe(
     unless(isPlainObj, objOf('from')),
     over(lensProp('from'), pipe(
       when(isNonEmptyString, prop),
@@ -34,43 +32,37 @@ const WithListener = pipe(
     )),
     over(lensProp('to'), unless(isNonEmptyString, always(void 0))),
     over(lensProp('combine'), unless(isFunction, always(defaultCombine))),
-  )),
-  listeners => {
+  ))),
+  ({ Component, has }) => {
 
-    const withListener = pipe(
-      unless(isFunction, always(EmptyObject)),
-      (component) => {
+    return pipe(
+      unless(isFunction, makeEmptyObject),
+      component => Component(sources => {
 
-        return sources => {
+        let sinks = component(sources)
 
-          let sinks = component(sources)
+        sinks = has.reduce((sinks, { from, to, combine }) => {
 
-          sinks = listeners.reduce((sinks, { from, to, combine }) => {
+          const event$ = (from(sinks, sources) || $.empty())
 
-            const event$ = (from(sinks, sources) || $.empty())
+          if (!to)
+            return event$.addListener(identity) || sinks//?
 
-            if (!to)
-              return event$.addListener(identity) || sinks
+          return {
+            ...sinks,
+            [to]: !sinks[to]
+              ? event$
+              : combine(sinks[to], event$)
+          }
+        }, sinks)
 
-            return {
-              ...sinks,
-              [to]: !sinks[to]
-                ? event$
-                : combine(sinks[to], event$)
-            }
-          }, sinks)
-
-          return sinks
-        }
-      }
+        return sinks
+      })
     )
-
-    return withListener
   }
 )
 
 module.exports = {
   default: WithListener,
-  WithListener,
-  makeListener: Factory(WithListener),
+  WithListener
 }

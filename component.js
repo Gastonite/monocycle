@@ -11,6 +11,7 @@ const isFunction = require('ramda-adjunct/lib/isFunction').default
 const { mergeSinks } = require('cyclejs-utils')
 const lt = require('ramda/src/lt')
 const prop = require('ramda/src/prop')
+const identity = require('ramda/src/identity')
 const both = require('ramda/src/both')
 const RamdaPipe = require('ramda/src/pipe')
 const identical = require('ramda/src/identical')
@@ -21,100 +22,102 @@ const complement = require('ramda/src/complement')
 const always = require('ramda/src/always')
 const apply = require('ramda/src/apply')
 const merge = require('ramda/src/merge')
+const lensProp = require('ramda/src/lensProp')
+const over = require('ramda/src/over')
 const isEmpty = require('ramda/src/isEmpty')
 const ensureArray = require('ramda-adjunct/lib/ensureArray').default
 const isPlainObj = require('ramda-adjunct/lib/isPlainObj').default
 const { assign } = require('./utilities/assign')
 const { coerce } = require('./utilities/coerce')
+const { ensurePlainObj } = require('./utilities/ensurePlainObj')
 const different = compose(complement, identical)
-// const log = require('./utilities/log').Log('Component')
-const R = {
-  map: require('ramda/src/map')
-}
+const log = require('./utilities/log').Log('Component')
+const map = require('ramda/src/map')
 
-const makeComponent = () => {
 
-  // Creates a component from a function
-  const Component = _component => {
+const makeComponent = pipe(
+  ensurePlainObj,
+  over(lensProp('makeDefault'), unless(isFunction, always(makeEmptyObject))),
+  over(lensProp('Combiners'), unless(isFunction, makeEmptyObject)),
+  over(lensProp('operators'), ensurePlainObj),
+  ({ makeDefault, Combiners, operators }) => {
 
-    const component = sources => _component(sources)
+    console.log('makeComponent()')
 
-    const map = f => Component(f(component))
+    // Creates a component from a function
+    const Component = _component => {
 
-    return Object.assign(component, {
-      ..._component,
-      ...R.map(
-        makeBehavior => x => pipe(
+      const component = sources => _component(sources)
+
+      const _map = f => Component(f(component))
+
+      return Object.assign(component, {
+        ..._component,
+        ...map(makeBehavior => pipe(
           makeBehavior,
-          map
-        )(x),
-        Composite.operators
-      ),
-
-      isComponent: true,
-      has: [_component],
-      map: map,
-      concat: (others, options = {}) => pipe(
-        ensureArray,
-        filter(isFunction),
-        ifElse(
-          isEmpty,
-          always(component),
-          pipe(
-            concat([component]),
-            coerce,
-            when(always(isPlainObj(options)), merge(options)),
-            Composite
+          _map
+        ), operators),
+        isComponent: true,
+        has: [_component],
+        map: _map,
+        concat: (others, options = {}) => pipe(
+          ensureArray,
+          filter(isFunction),
+          ifElse(
+            isEmpty,
+            always(component),
+            pipe(
+              concat([component]),
+              coerce,
+              when(always(isPlainObj(options)), merge(options)),
+              Composite
+            ),
           ),
-        ),
-        Component
-      )(others)
-    })
-  }
-
-  // Creates a composite component from 0 or * components
-  const Composite = pipe(
-    coerce,
-    options => pipe(
-      R.map(unless(isFunction, Composite.makeDefault)),
-      filter(different(Composite.Empty)),
-      R.map(Component),
-      ifElse(isEmpty,
-        always(Composite.Empty),
-        pipe(
-          reject(identical(Composite.Empty)),
-          components => sources => pipe(
-            R.map(applyTo(sources)),
-            arrayOf,
-            concat(__, [Composite.Combiners(options)]),
-            apply(mergeSinks)
-          )(components),
-          assign({
-            isComposite: true
-          }),
           Component
+        )(others)
+      })
+    }
+
+    // Creates a composite component from 0 or * components
+    const Composite = pipe(
+      coerce,
+      options => pipe(
+        map(unless(isFunction, makeDefault)),
+        reject(identical(Composite.Empty)),
+        map(Component),
+        ifElse(isEmpty,
+          always(Composite.Empty),
+          pipe(
+            has => {
+
+              const composite = Component(sources => {
+
+                return pipe(
+                  map(applyTo(sources)),
+                  arrayOf,
+                  concat(__, [Combiners(options)]),
+                  apply(mergeSinks)
+                )(has)
+              })
+
+              composite.isComposite = true
+              composite.has = has
+
+              return composite
+            }
+          )
         )
-      )
-    )(options.has)
-  )
+      )(options.has)
+    )
 
-  Object.assign(Composite, {
-    makeDefault: makeEmptyObject,
-    Combiners: EmptyObject,
-    operators: {}
-  })
+    Composite.Empty = Component(EmptyObject)
 
-  return Object.assign(Composite, {
-    Empty: Component(EmptyObject)
-  })
-}
-
-const Component = makeComponent()
-
+    return Composite
+  }
+)
 
 module.exports = {
-  default: Component,
-  Component,
+  default: makeComponent,
   makeComponent,
   isComponent: both(isFunction, prop('isComponent')),
   isComposite: both(isFunction, prop('isComposite')),

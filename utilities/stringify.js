@@ -22,4 +22,7 @@ const stringify = state => {
   }
 }
 
-module.exports = stringify
+module.exports = {
+  default: stringify,
+  stringify
+}

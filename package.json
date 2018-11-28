@@ -5,7 +5,7 @@
   "module": "component.js",
   "main": "component.js",
   "scripts": {
-    "test": "mocha --ui tdd --timeout 5000 \"./{,!(node_modules)/**/}*.spec.js\"",
+    "test": "ava -v --fail-fast  component.spec.js",
     "build": ""
   },
   "repository": "ssh://github/Gastonite/monocycle.git",
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@cycle/time": "^0.16.0",
+    "ava": "^0.25.0",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-3": "^6.24.1",

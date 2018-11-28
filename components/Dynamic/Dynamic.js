@@ -1,4 +1,5 @@
 const $ = require('xstream').default
+const { Component } = require('../../component')
 const isFunction = require('ramda-adjunct/lib/isFunction').default
 const unless = require('ramda/src/unless')
 const always = require('ramda/src/always')
@@ -20,7 +21,7 @@ const WithDynamic = pipe(
   over(lensProp('from'), unless(isFunction, always($.empty))),
   ({ from }) => pipe(
     unless(isFunction, makeEmptyObject),
-    component => pipe(
+    component => Component(pipe(
       defaultTo(void 0),
       ensurePlainObj,
       sources => extractSinks(
@@ -30,7 +31,7 @@ const WithDynamic = pipe(
           .remember(),
         Object.keys(sources)
       )
-    )
+    ))
   )
 )
 

@@ -1,11 +1,12 @@
 
-const { forall, assert, property, nat, Options } = require('jsverify')
+const test = require('ava')
 const concat = require('ramda/src/concat')
 const identity = require('ramda/src/identity')
 const map = require('ramda/src/map')
 const prop = require('ramda/src/prop')
 const jsc = require('jsverify')
-const { Component } = require('./component')
+const { assign } = require('./utilities/assign')
+const { makeComponent } = require('./component')
 const ensureArray = require('ramda-adjunct/lib/ensureArray').default
 const isFunction = require('ramda-adjunct/lib/isFunction').default
 const pipe = require('ramda/src/pipe')
@@ -30,13 +31,16 @@ const collectKinds = pipe(
   flatten
 )
 
-suite('Component', () => {
+const testsOptions = { tests: 100 }
 
-  const diagramsArb = jsc.dict(diagramArbitrary)
+const ComponentMacro = test => (t, ...args) => test(t, makeComponent(...args), ...args)
 
-  suite('Monoid laws', () => {
+const diagramsArb = jsc.dict(diagramArbitrary)
 
-    property('right identity', diagramsArb, diagrams => withTime(Time => {
+test('Monoid: right identity', ComponentMacro((t, Component) => {
+  return withTime(Time => {
+
+    const property = jsc.forall(diagramsArb, diagrams => {
 
       const component = pipe(
         map(Time.diagram),
@@ -49,15 +53,24 @@ suite('Component', () => {
 
       uniq(concat(keys(sinksA), keys(sinksB)))
         .forEach(key => {
-
           Time.assertEqual(
             sinksA[key],
-            sinksB[key]
+            sinksB[key],
+            t.is.bind(t)
           )
         })
-    }))
 
-    property('left identity', diagramsArb, diagrams => withTime(Time => {
+      return true
+    })
+
+    jsc.assert(property, testsOptions)
+  })()
+}))
+
+test('Monoid: left identity', ComponentMacro((t, Component) => {
+  return withTime(Time => {
+
+    const property = jsc.forall(diagramsArb, diagrams => {
 
       const component = pipe(
         map(Time.diagram),
@@ -75,16 +88,24 @@ suite('Component', () => {
 
           Time.assertEqual(
             sinksA[key],
-            sinksB[key]
+            sinksB[key],
+            t.is.bind(t)
           )
         })
-    }))
 
-  })
+      return true
+    })
 
-  suite('Semigroup laws', () => {
+    jsc.assert(property, testsOptions)
 
-    property('associativity', diagramsArb, diagramsArb, diagramsArb, (a, b, c) => withTime(Time => {
+  })()
+}))
+
+test('Monoid: associativity', ComponentMacro((t, Component) => {
+
+  return withTime(Time => {
+
+    const property = jsc.forall(diagramsArb, diagramsArb, diagramsArb, (a, b, c) => {
 
       const componentA = pipe(
         map(Time.diagram),
@@ -115,16 +136,24 @@ suite('Component', () => {
 
           Time.assertEqual(
             sinksA[key],
-            sinksB[key]
+            sinksB[key],
+            t.is.bind(t)
           )
         })
-    }))
 
-  })
+      return true
+    })
 
-  suite('Functor laws', () => {
+    jsc.assert(property, testsOptions)
 
-    property('identity', diagramsArb, diagrams => withTime(Time => {
+  })()
+}))
+
+test('Functor: identity', ComponentMacro((t, Component) => {
+
+  return withTime(Time => {
+
+    const property = jsc.forall(diagramsArb, diagrams => {
 
       const component = pipe(
         map(Time.diagram),
@@ -140,62 +169,78 @@ suite('Component', () => {
 
           Time.assertEqual(
             sinksA[key],
-            sinksB[key]
+            sinksB[key],
+            t.is.bind(t)
           )
         })
-    }))
 
-    property('composition',
-      diagramsArb,
-      diagramsArb,
-      diagramsArb,
-      (a, b, c) => withTime(Time => {
+      return true
+    })
 
-        const component1 = pipe(
-          map(Time.diagram),
-          always,
-          Component
-        )(a)
+    jsc.assert(property, testsOptions)
 
-        const component2 = pipe(
-          map(Time.diagram),
-          always,
-          Component
-        )(b)
+  })()
+}))
 
-        const component3 = pipe(
-          map(Time.diagram),
-          always,
-          Component
-        )(c)
+test('Functor: composition', ComponentMacro((t, Component) => {
+
+  return withTime(Time => {
+
+    const property = jsc.forall(diagramsArb, diagramsArb, diagramsArb, (a, b, c) => {
+
+      const component1 = pipe(
+        map(Time.diagram),
+        always,
+        Component
+      )(a)
+
+      const component2 = pipe(
+        map(Time.diagram),
+        always,
+        Component
+      )(b)
+
+      const component3 = pipe(
+        map(Time.diagram),
+        always,
+        Component
+      )(c)
 
 
-        const f = component => sources => ({
-          ...component(sources),
-          ...component2(sources),
+      const f = component => sources => ({
+        ...component(sources),
+        ...component2(sources),
+      })
+
+      const g = component => sources => ({
+        ...component(sources),
+        ...component3(sources),
+      })
+
+      const composite1 = component1.map(f).map(g)
+      const composite2 = component1.map(x => g(f((x))))
+
+      const sinksA = composite1()
+      const sinksB = composite2()
+
+      uniq(concat(keys(sinksA), keys(sinksB)))
+        .forEach(key => {
+
+          Time.assertEqual(
+            sinksA[key],
+            sinksB[key],
+            t.is.bind(t)
+          )
         })
 
-        const g = component => sources => ({
-          ...component(sources),
-          ...component3(sources),
-        })
+      return true
+    })
 
-        const composite1 = component1.map(f).map(g)
-        const composite2 = component1.map(x => g(f((x))))
+    jsc.assert(property, testsOptions)
 
-        const sinksA = composite1()
-        const sinksB = composite2()
+  })()
+}))
 
-        uniq(concat(keys(sinksA), keys(sinksB)))
-          .forEach(key => {
-
-            Time.assertEqual(
-              sinksA[key],
-              sinksB[key]
-            )
-          })
-      }))
-  })
-
-})
-
+module.exports = {
+  ComponentMacro
+}
