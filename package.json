@@ -5,7 +5,8 @@
   "module": "component.js",
   "main": "component.js",
   "scripts": {
-    "test": "ava -v --fail-fast  component.spec.js",
+    "test": "ava -v --fail-fast  components/Switch/Switch.spec.js",
+    "watch-test": "ava -vw --fail-fast  components/Dynamic/Dynamic.spec.js",
     "build": ""
   },
   "repository": "ssh://github/Gastonite/monocycle.git",
@@ -17,6 +18,7 @@
     ]
   },
   "dependencies": {
+    "@f/is-functor": "^1.0.0",
     "browser-assert": "^1.2.1",
     "cyclejs-utils": "^3.2.0",
     "jsverify": "^0.8.4",

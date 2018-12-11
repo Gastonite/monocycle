@@ -11,6 +11,7 @@ const always = require('ramda/src/always')
 const isString = require('ramda-adjunct/lib/isString').default
 
 
+
 const Log = (options = {}) => {
 
   const {

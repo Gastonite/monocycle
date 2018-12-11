@@ -37,10 +37,10 @@ const map = require('ramda/src/map')
 
 const makeComponent = pipe(
   ensurePlainObj,
-  over(lensProp('makeDefault'), unless(isFunction, always(makeEmptyObject))),
+  over(lensProp('Default'), unless(isFunction, always(makeEmptyObject))),
   over(lensProp('Combiners'), unless(isFunction, makeEmptyObject)),
   over(lensProp('operators'), ensurePlainObj),
-  ({ makeDefault, Combiners, operators }) => {
+  ({ Default, Combiners, operators }) => {
 
     console.log('makeComponent()')
 
@@ -82,7 +82,7 @@ const makeComponent = pipe(
     const Composite = pipe(
       coerce,
       options => pipe(
-        map(unless(isFunction, makeDefault)),
+        map(unless(isFunction, Default)),
         reject(identical(Composite.Empty)),
         map(Component),
         ifElse(isEmpty,

@@ -22,12 +22,10 @@ test(`listens from a source`, t => {
       const streamA = Time.diagram(a)
       const streamB = Time.diagram(b)
 
-      const withListener = WithListener([
-        {
-          from: (sinks, sources) => $.merge(sources.mySource, streamB),
-          to: 'mySink'
-        }
-      ])
+      const withListener = WithListener({
+        from: (sinks, sources) => $.merge(sources.mySource, streamB),
+        to: 'mySink'
+      })
 
       const component = withListener()
 
@@ -59,12 +57,10 @@ test(`listens from a sink`, t => {
       const diagramA = Time.diagram(a)
       const diagramB = Time.diagram(b)
 
-      const withListener = WithListener([
-        {
-          from: (sinks, sources) => $.merge(sinks.myPreviousSink, diagramB),
-          to: 'mySink'
-        }
-      ])
+      const withListener = WithListener({
+        from: (sinks, sources) => $.merge(sinks.myPreviousSink, diagramB),
+        to: 'mySink'
+      })
 
       const component = withListener(always({
         myPreviousSink: diagramA
@@ -104,12 +100,10 @@ test(`listens from a sink (by key)`, t => {
 
       const diagramA = Time.diagram(a)
 
-      const withListener = WithListener([
-        {
-          from: 'myPreviousSink',
-          to: 'mySink'
-        }
-      ])
+      const withListener = WithListener({
+        from: 'myPreviousSink',
+        to: 'mySink'
+      })
 
       const component = withListener(always({
         myPreviousSink: diagramA
@@ -149,12 +143,10 @@ test(`overrides a sink`, t => {
       const diagramA = Time.diagram(a)
       const diagramB = Time.diagram(b)
 
-      const withListener = WithListener([
-        {
-          from: () => diagramB,
-          to: 'mySink'
-        }
-      ])
+      const withListener = WithListener({
+        from: () => diagramB,
+        to: 'mySink'
+      })
 
       const component = withListener(() => ({ mySink: diagramA }))
 
@@ -186,13 +178,11 @@ test(`combines with another sink`, t => {
       const diagramA = Time.diagram(a)
       const diagramB = Time.diagram(b)
 
-      const withListener = WithListener([
-        {
-          from: () => diagramB,
-          combine: $.merge,
-          to: 'mySink'
-        }
-      ])
+      const withListener = WithListener({
+        from: () => diagramB,
+        combine: $.merge,
+        to: 'mySink'
+      })
 
       const component = withListener(always({ mySink: diagramA }))
 

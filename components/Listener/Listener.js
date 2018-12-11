@@ -19,21 +19,22 @@ const { coerce } = require('../../utilities/coerce')
 
 const defaultCombine = (before, sink$) => sink$
 
+const From = pipe(
+  when(isNonEmptyString, prop),
+  unless(isFunction, always($.empty))
+)
+
 const WithListener = pipe(
-  coerce,
+  unless(isPlainObj, objOf('from')),
   over(lensProp('Component'), pipe(
     unless(isFunction, () => makeComponent())
   )),
-  over(lensProp('has'), map(pipe(
-    unless(isPlainObj, objOf('from')),
-    over(lensProp('from'), pipe(
-      when(isNonEmptyString, prop),
-      unless(isFunction, always($.empty))
-    )),
-    over(lensProp('to'), unless(isNonEmptyString, always(void 0))),
-    over(lensProp('combine'), unless(isFunction, always(defaultCombine))),
-  ))),
-  ({ Component, has }) => {
+  // over(lensProp('has'), map(pipe(
+  over(lensProp('from'), From),
+  over(lensProp('to'), unless(isNonEmptyString, always(void 0))),
+  over(lensProp('combine'), unless(isFunction, always(defaultCombine))),
+  // ))),
+  ({ Component, from, to, combine }) => {
 
     return pipe(
       unless(isFunction, makeEmptyObject),
@@ -41,28 +42,26 @@ const WithListener = pipe(
 
         let sinks = component(sources)
 
-        sinks = has.reduce((sinks, { from, to, combine }) => {
+        const event$ = (from(sinks, sources) || $.empty())
 
-          const event$ = (from(sinks, sources) || $.empty())
+        if (!to)
+          return event$.addListener(identity) || sinks
 
-          if (!to)
-            return event$.addListener(identity) || sinks//?
-
-          return {
-            ...sinks,
-            [to]: !sinks[to]
-              ? event$
-              : combine(sinks[to], event$)
-          }
-        }, sinks)
-
-        return sinks
+        return {
+          ...sinks,
+          [to]: !sinks[to]
+            ? event$
+            : combine(sinks[to], event$)
+        }
       })
     )
   }
 )
 
+
+
 module.exports = {
   default: WithListener,
-  WithListener
+  WithListener,
+  From
 }

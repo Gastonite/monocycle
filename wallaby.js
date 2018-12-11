@@ -2,13 +2,14 @@ module.exports = function () {
   return {
     files: [
       '**/*.js',
+      // 'components/Dynamic/*.js',
+      // 'utilities/*.js',
       '!**/*.spec.js',
       '!node_modules/**/*',
       '!old/**/*',
     ],
 
     tests: [
-      // 'component.spec.js',
       '**/*.spec.js',
     ],
     env: {

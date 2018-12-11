@@ -11,13 +11,16 @@ const ensureArray = require('ramda-adjunct/lib/ensureArray').default
 const isPlainObj = require('ramda-adjunct/lib/isPlainObj').default
 const isUndefined = require('ramda-adjunct/lib/isUndefined').default
 
-const coerce = pipe(
+const Coerce = key => pipe(
   when(isFalsy, EmptyObject),
-  unless(isPlainObj, objOf('has')),
-  over(lensProp('has'), pipe(ensureArray, reject(isUndefined))),
+  unless(isPlainObj, objOf(key)),
+  over(lensProp(key), pipe(ensureArray, reject(isUndefined))),
 )
+
+const coerce = Coerce('has')
 
 module.exports = {
   default: coerce,
-  coerce
+  coerce,
+  Coerce
 }
