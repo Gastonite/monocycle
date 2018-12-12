@@ -60,14 +60,15 @@ const WithSwitch = pipe(
 
       if (!merge) {
 
-        let returned
+        let resolved
 
         resolvers.some(resolve => {
-          returned = resolve(value)
+          const returned = resolve(value)
+
           return returned && (resolved = returned)
         })
 
-        return returned
+        return resolved
       }
 
       return merge(
