@@ -1,5 +1,5 @@
 const { makeComponent } = require('../../component')
-const { default: $ } = require('xstream')
+const { Stream: $ } = require('xstream')
 const identity = require('ramda/src/identity')
 const { pipe } = require('../../utilities/pipe')
 const over = require('ramda/src/over')
@@ -14,7 +14,6 @@ const isPlainObj = require('ramda-adjunct/lib/isPlainObj').default
 const isNonEmptyString = require('ramda-adjunct/lib/isNonEmptyString').default
 const isFunction = require('ramda-adjunct/lib/isFunction').default
 const { makeEmptyObject } = require('../../utilities/empty')
-const { coerce } = require('../../utilities/coerce')
 // const log = require('./utilities/log').Log('Listener')
 
 const defaultCombine = (before, sink$) => sink$
@@ -29,11 +28,9 @@ const WithListener = pipe(
   over(lensProp('Component'), pipe(
     unless(isFunction, () => makeComponent())
   )),
-  // over(lensProp('has'), map(pipe(
   over(lensProp('from'), From),
   over(lensProp('to'), unless(isNonEmptyString, always(void 0))),
   over(lensProp('combine'), unless(isFunction, always(defaultCombine))),
-  // ))),
   ({ Component, from, to, combine }) => {
 
     return pipe(

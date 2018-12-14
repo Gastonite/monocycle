@@ -1,6 +1,5 @@
-const $ = require('xstream').default
+const { Stream: $ } = require('xstream')
 const dropRepeats = require('xstream/extra/dropRepeats').default
-// const log = require('../../utilities/log').Log('Switch')
 const { Memoize } = require('../../utilities/memoize')
 const { makeEmptyObject } = require('../../utilities/empty')
 const { ensurePlainObj } = require('../../utilities/ensurePlainObj')
@@ -27,6 +26,7 @@ const when = require('ramda/src/when')
 const map = require('ramda/src/map')
 const pipe = require('ramda/src/pipe')
 const { Case } = require('./Case')
+// const log = require('../../utilities/log').Log('Switch')
 
 
 const WithSwitch = pipe(

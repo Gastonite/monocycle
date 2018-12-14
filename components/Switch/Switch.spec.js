@@ -1,27 +1,12 @@
 const test = require('ava')
-const $ = require('xstream').default
-// const { pipe } = require('../../utilities/pipe')
-// const { WithDynamic } = require('../Dynamic')
+const { Stream: $ } = require('xstream')
 const { WithSwitch, Case } = require('./Switch')
-const ensureArray = require('ramda-adjunct/lib/ensureArray').default
 const isPlainObj = require('ramda-adjunct/lib/isPlainObj').default
-const isFunction = require('ramda-adjunct/lib/isFunction').default
-const noop = require('ramda-adjunct/lib/noop').default
-const { makeComponent, isComponent } = require('../../component')
-const T = require('ramda/src/T')
-const ifElse = require('ramda/src/ifElse')
-const defaultTo = require('ramda/src/defaultTo')
-const compose = require('ramda/src/compose')
-const pipe = require('ramda/src/pipe')
-const over = require('ramda/src/over')
-const unless = require('ramda/src/unless')
+const { isComponent } = require('../../component')
 const toString = require('ramda/src/toString')
-const lensProp = require('ramda/src/lensProp')
 const always = require('ramda/src/always')
 const keys = require('ramda/src/keys')
-const { WithComponentTest, withFunctionTest } = require('../../utilities/WithFactoryMacro')
-const { ensurePlainObj } = require('../../utilities/ensurePlainObj')
-
+const { WithComponentTest } = require('../../utilities/WithFactoryMacro')
 
 const withSwitchTest = WithComponentTest(WithSwitch)
 
@@ -136,7 +121,6 @@ test(`Creates 'resolve' from case object`, withSwitchTest(t => {
 
 const casesMacro = (t, Spec) => {
 
-  // console.log('input', input)
   const {
     sources,
     assertions,
@@ -144,14 +128,6 @@ const casesMacro = (t, Spec) => {
     merge,
     Default
   } = Spec(t)
-
-  // const { testComponent } = t.context
-
-  // t.plan(testComponent.nbTests + 1 + 3 + 3 )
-  // const testCases = ({ sources, assertions } = {}) => {
-
-  // t.is(eval(input), expected)
-
 
   const component = WithSwitch({
     SinksKeys: always(['ga', 'bu', 'zo']),

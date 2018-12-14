@@ -5,7 +5,6 @@ const identity = require('ramda/src/identity')
 const map = require('ramda/src/map')
 const prop = require('ramda/src/prop')
 const jsc = require('jsverify')
-const { assign } = require('./utilities/assign')
 const { makeComponent } = require('./component')
 const ensureArray = require('ramda-adjunct/lib/ensureArray').default
 const isFunction = require('ramda-adjunct/lib/isFunction').default

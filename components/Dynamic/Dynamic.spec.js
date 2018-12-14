@@ -1,6 +1,6 @@
 const jsc = require('jsverify')
 const test = require('ava')
-const $ = require('xstream').default
+const { Stream: $ } = require('xstream')
 const { pipe } = require('../../utilities/pipe')
 const { EmptyObject } = require('../../utilities/empty')
 const { ensurePlainObj } = require('../../utilities/ensurePlainObj')

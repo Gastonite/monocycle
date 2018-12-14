@@ -18,6 +18,7 @@
     ]
   },
   "dependencies": {
+    "@cycle/isolate": "^4.2.0",
     "@f/is-functor": "^1.0.0",
     "browser-assert": "^1.2.1",
     "cyclejs-utils": "^3.2.0",
@@ -29,7 +30,7 @@
     "ramda": "^0.25.0",
     "ramda-adjunct": "^2.11.0",
     "sanctuary": "^0.15.0",
-    "snabbdom-to-html": "^5.1.1"
+    "xstream": "^11.7.0"
   },
   "devDependencies": {
     "@cycle/time": "^0.16.0",
