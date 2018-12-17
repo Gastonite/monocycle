@@ -7,16 +7,11 @@
   "scripts": {
     "test": "ava -v --fail-fast  components/Switch/Switch.spec.js",
     "watch-test": "ava -vw --fail-fast  components/Dynamic/Dynamic.spec.js",
-    "build": ""
+    "reinstall": "rm -fr node_modules && pnpm i"
   },
   "repository": "ssh://github/Gastonite/monocycle.git",
   "author": "Clément Pasquier <clement@n00sphere.net>",
   "license": "GPL",
-  "browserify": {
-    "transform": [
-      "babelify"
-    ]
-  },
   "dependencies": {
     "@cycle/isolate": "^4.2.0",
     "@f/is-functor": "^1.0.0",
@@ -38,7 +33,6 @@
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-3": "^6.24.1",
-    "babelify": "^8.0.0",
     "cyclejs-test-helpers": "^4.0.0",
     "mocha": "^5.2.0",
     "sanctuary-show": "^1.0.0"
