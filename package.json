@@ -17,14 +17,8 @@
     "@f/is-functor": "^1.0.0",
     "browser-assert": "^1.2.1",
     "cyclejs-utils": "^3.2.0",
-    "jsverify": "^0.8.4",
-    "lodash.isdate": "^4.0.1",
-    "lodash.iserror": "^3.1.1",
-    "lodash.isplainobject": "^4.0.6",
-    "lodash.isregexp": "^4.0.1",
     "ramda": "^0.25.0",
     "ramda-adjunct": "^2.11.0",
-    "sanctuary": "^0.15.0",
     "xstream": "^11.7.0"
   },
   "devDependencies": {
@@ -34,7 +28,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-3": "^6.24.1",
     "cyclejs-test-helpers": "^4.0.0",
-    "mocha": "^5.2.0",
-    "sanctuary-show": "^1.0.0"
+    "jsverify": "^0.8.4",
+    "mocha": "^5.2.0"
   }
 }

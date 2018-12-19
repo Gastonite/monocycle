@@ -1,14 +1,9 @@
 const test = require('ava')
-const { makeListener, WithListener } = require('./Listener')
-const { makeComponent } = require('../../component')
+const { WithListener } = require('./Listener')
 const jsc = require("jsverify")
-const assert = require('browser-assert')
 const keys = require('ramda/src/keys')
-const equals = require('ramda/src/equals')
-const objOf = require('ramda/src/objOf')
 const always = require('ramda/src/always')
 const { Stream: $ } = require('xstream')
-const { forall, property, nat, Options } = require('jsverify');
 const { diagramArbitrary: diagramArb, withTime } = require('cyclejs-test-helpers');
 
 const testsOptions = { tests: 100 }
@@ -188,7 +183,9 @@ test(`combines with another sink`, t => {
 
       const sinks = component()
 
-      assert(equals(keys(sinks), ['mySink']), 'yo')
+      t.deepEqual(keys(sinks), ['mySink'])
+
+      // assert(equals(keys(sinks), ['mySink']), 'yo')
 
       Time.assertEqual(
         $.merge(diagramA, diagramB),
