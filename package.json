@@ -5,8 +5,8 @@
   "module": "component.js",
   "main": "component.js",
   "scripts": {
-    "test": "ava -v --fail-fast  components/Switch/Switch.spec.js",
-    "watch-test": "ava -vw --fail-fast  components/Dynamic/Dynamic.spec.js",
+    "test": "ava -v --fail-fast  **/*.spec.js",
+    "watch-test": "ava -vw --fail-fast  **/*.spec.js",
     "reinstall": "rm -fr node_modules && pnpm i"
   },
   "repository": "ssh://github/Gastonite/monocycle.git",
@@ -16,7 +16,6 @@
     "@cycle/isolate": "^4.2.0",
     "@f/is-functor": "^1.0.0",
     "browser-assert": "^1.2.1",
-    "cyclejs-utils": "^3.2.0",
     "ramda": "^0.25.0",
     "ramda-adjunct": "^2.11.0",
     "xstream": "^11.7.0"

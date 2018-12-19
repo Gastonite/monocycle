@@ -8,7 +8,7 @@ const filter = require('ramda/src/filter')
 const ifElse = require('ramda/src/ifElse')
 const unless = require('ramda/src/unless')
 const isFunction = require('ramda-adjunct/lib/isFunction').default
-const { mergeSinks } = require('cyclejs-utils')
+const { mergeSinks } = require('./utilities/sinks')
 const prop = require('ramda/src/prop')
 const both = require('ramda/src/both')
 const identical = require('ramda/src/identical')
@@ -25,7 +25,7 @@ const isPlainObj = require('ramda-adjunct/lib/isPlainObj').default
 const { coerce } = require('./utilities/coerce')
 const { ensurePlainObj } = require('./utilities/ensurePlainObj')
 const map = require('ramda/src/map')
-// const log = require('./utilities/log').Log('Component')
+const log = require('./utilities/log').Log('Component')
 
 
 const makeComponent = pipe(
@@ -35,7 +35,7 @@ const makeComponent = pipe(
   over(lensProp('operators'), ensurePlainObj),
   ({ Default, Combiners, operators }) => {
 
-    console.log('makeComponent()')
+    // console.log('makeComponent()')
 
     // Creates a component from a function
     const Component = _component => {

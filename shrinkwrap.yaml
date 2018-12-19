@@ -2,7 +2,6 @@ dependencies:
   '@cycle/isolate': 4.2.0
   '@f/is-functor': 1.0.0
   browser-assert: 1.2.1
-  cyclejs-utils: 3.2.0
   ramda: 0.25.0
   ramda-adjunct: 2.13.0
   xstream: 11.7.0
@@ -1342,15 +1341,6 @@ packages:
     dev: true
     resolution:
       integrity: sha1-PPY5FIemYppiR+sMoM4ACBt+Nho=
-  /cycle-onionify/6.1.0:
-    dependencies:
-      '@cycle/isolate': 4.2.0
-      '@cycle/run': 5.2.0
-      quicktask: 1.1.0
-      xstream: 11.7.0
-    dev: false
-    resolution:
-      integrity: sha512-TIcvvh00ZBAmNgwJ3vswhcrY0NbytjIhOPxp0YUbvDaU1abZwh5V95pmXHCWueG6XhgnpqbibK0H2GGNjgrk4A==
   /cyclejs-test-helpers/4.0.0:
     dependencies:
       '@cycle/time': 0.16.0
@@ -1359,14 +1349,6 @@ packages:
     dev: true
     resolution:
       integrity: sha512-7cSWlfRwxNFKHxh4F2mkpiAYQUp6LvGCdOl9lqfEVFEM1z02cVdp1DGczGcDhz4DoeP3mHub02k6nsxMDUIDxQ==
-  /cyclejs-utils/3.2.0:
-    dependencies:
-      cycle-onionify: 6.1.0
-    dev: false
-    peerDependencies:
-      xstream: '*'
-    resolution:
-      integrity: sha512-2+BmNsR5eCJixXVgLO2ilBBcC/iPLZES8ikmVCfFJCp8VPLOOPH6hsohrcB2q/cpxTBTTs4sWLlRRRIZNzCaHw==
   /date-time/0.1.1:
     dev: true
     engines:
@@ -4092,7 +4074,6 @@ specifiers:
   babel-preset-stage-3: ^6.24.1
   browser-assert: ^1.2.1
   cyclejs-test-helpers: ^4.0.0
-  cyclejs-utils: ^3.2.0
   jsverify: ^0.8.4
   mocha: ^5.2.0
   ramda: ^0.25.0
