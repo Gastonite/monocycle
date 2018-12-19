@@ -1,7 +1,7 @@
 const { makeComponent } = require('../../component')
 const { Stream: $ } = require('xstream')
 const identity = require('ramda/src/identity')
-const { pipe } = require('../../utilities/pipe')
+const pipe = require('ramda/src/pipe')
 const over = require('ramda/src/over')
 const lensProp = require('ramda/src/lensProp')
 const map = require('ramda/src/map')

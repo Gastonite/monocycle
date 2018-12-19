@@ -1,5 +1,5 @@
 const { EmptyObject, makeEmptyObject } = require('./utilities/empty')
-const { pipe } = require('./utilities/pipe')
+const pipe = require('ramda/src/pipe')
 const when = require('ramda/src/when')
 const reject = require('ramda/src/reject')
 const applyTo = require('ramda/src/applyTo')

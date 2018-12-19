@@ -1,7 +1,7 @@
 const WithFactoryMacro = factory => test => (t, args = [], ...others) => test(t, factory(...args), ...others)
 const isFunction = require('ramda-adjunct/lib/isFunction').default
 const isPlainObj = require('ramda-adjunct/lib/isPlainObj').default
-const { pipe } = require('./pipe')
+const pipe = require('ramda/src/pipe')
 const when = require('ramda/src/when')
 const keys = require('ramda/src/keys')
 const merge = require('ramda/src/merge')

@@ -4,11 +4,14 @@ const EmptyObject = () => ({})
 
 const EmptyArray = () => []
 
+const EmptyString = () => ''
+
 const makeEmptyObject = always(EmptyObject)
 
 module.exports = {
   default: EmptyObject,
   EmptyObject,
   EmptyArray,
+  EmptyString,
   makeEmptyObject
 }

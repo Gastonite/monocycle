@@ -1,7 +1,7 @@
 const jsc = require('jsverify')
 const test = require('ava')
 const { Stream: $ } = require('xstream')
-const { pipe } = require('../../utilities/pipe')
+const pipe = require('ramda/src/pipe')
 const { EmptyObject } = require('../../utilities/empty')
 const { ensurePlainObj } = require('../../utilities/ensurePlainObj')
 const { WithComponentTest } = require('../../utilities/WithFactoryMacro')
