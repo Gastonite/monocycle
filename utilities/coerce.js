@@ -3,6 +3,7 @@ const objOf = require('ramda/src/objOf')
 const when = require('ramda/src/when')
 const over = require('ramda/src/over')
 const reject = require('ramda/src/reject')
+const identity = require('ramda/src/internal/_identity')
 const pipe = require('ramda/src/pipe')
 const { EmptyObject } = require('./empty')
 const lensProp = require('ramda/src/lensProp')
@@ -12,6 +13,7 @@ const isPlainObj = require('ramda-adjunct/lib/isPlainObj').default
 const isUndefined = require('ramda-adjunct/lib/isUndefined').default
 
 const Coerce = key => pipe(
+  identity,
   when(isFalsy, EmptyObject),
   unless(isPlainObj, objOf(key)),
   over(lensProp(key), pipe(ensureArray, reject(isUndefined))),
