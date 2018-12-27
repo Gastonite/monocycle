@@ -14,7 +14,7 @@ const isPlainObj = require('ramda-adjunct/lib/isPlainObj').default
 const isNonEmptyString = require('ramda-adjunct/lib/isNonEmptyString').default
 const isFunction = require('ramda-adjunct/lib/isFunction').default
 const { makeEmptyObject } = require('../../utilities/empty')
-// const log = require('./utilities/log').Log('Listener')
+// const log = require('../../utilities/log').Log('Listener')
 
 const defaultCombine = (before, sink$) => sink$
 
@@ -23,8 +23,10 @@ const From = pipe(
   unless(isFunction, always($.empty))
 )
 
+const coerce = unless(isPlainObj, objOf('from'))
+
 const WithListener = pipe(
-  unless(isPlainObj, objOf('from')),
+  coerce,
   over(lensProp('Component'), pipe(
     unless(isFunction, () => makeComponent())
   )),
@@ -34,7 +36,9 @@ const WithListener = pipe(
   ({ Component, from, to, combine }) => {
 
     return pipe(
+      // log.partial(1),
       unless(isFunction, makeEmptyObject),
+      // log.partial(2),
       component => Component(sources => {
 
         let sinks = component(sources)
@@ -55,6 +59,7 @@ const WithListener = pipe(
   }
 )
 
+WithListener.coerce = coerce
 
 
 module.exports = {
