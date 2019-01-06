@@ -1,4 +1,4 @@
-const { EmptyObject, makeEmptyObject } = require('./utilities/empty')
+const { EmptyObject, makeEmptyObject } = require('../utilities/empty')
 const pipe = require('ramda/src/pipe')
 const when = require('ramda/src/when')
 const reject = require('ramda/src/reject')
@@ -8,7 +8,7 @@ const filter = require('ramda/src/filter')
 const ifElse = require('ramda/src/ifElse')
 const unless = require('ramda/src/unless')
 const isFunction = require('ramda-adjunct/lib/isFunction').default
-const { mergeSinks } = require('./utilities/sinks')
+const { mergeSinks } = require('../utilities/sinks')
 const prop = require('ramda/src/prop')
 const both = require('ramda/src/both')
 const identical = require('ramda/src/identical')
@@ -22,10 +22,10 @@ const over = require('ramda/src/over')
 const isEmpty = require('ramda/src/isEmpty')
 const ensureArray = require('ramda-adjunct/lib/ensureArray').default
 const isPlainObj = require('ramda-adjunct/lib/isPlainObj').default
-const { coerce } = require('./utilities/coerce')
-const { ensurePlainObj } = require('./utilities/ensurePlainObj')
+const { coerce } = require('../utilities/coerce')
+const { ensurePlainObj } = require('../utilities/ensurePlainObj')
 const map = require('ramda/src/map')
-const log = require('./utilities/log').Log('Component')
+// const log = require('../utilities/log').Log('Component')
 
 
 const makeComponent = pipe(

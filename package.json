@@ -2,11 +2,11 @@
   "name": "monocycle",
   "version": "1.0.1",
   "description": "",
-  "module": "component.js",
-  "main": "component.js",
+  "module": "component",
+  "main": "component",
   "scripts": {
-    "test": "ava -v --fail-fast  **/*.spec.js",
-    "watch-test": "ava -vw --fail-fast  **/*.spec.js",
+    "test": "ava -v --fail-fast '**/*.spec.js'",
+    "watch-test": "pnpm test -- -w",
     "reinstall": "rm -fr node_modules && pnpm i"
   },
   "repository": "ssh://github/Gastonite/monocycle.git",
