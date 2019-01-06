@@ -8,7 +8,7 @@ const stringify = state => {
     return JSON.stringify(
       state,
       (k, v) => isUndefined(v)
-        ? 'undefined'
+        ? 'UNDEFINED'
         : (
           isRegExp(v)
             ? v.toString()
