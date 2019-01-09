@@ -42,7 +42,7 @@ const makeComponent = pipe(
 
       const component = sources => _component(sources)
 
-      const _map = f => Component(f(component))
+      const _map = f => Component(Object.assign(f(component), component))
 
       return Object.assign(component, {
         ..._component,
