@@ -10,6 +10,7 @@ const concat = require('ramda/src/concat')
 const pipe = require('ramda/src/pipe')
 const __ = require('ramda/src/__')
 const always = require('ramda/src/always')
+const keys = require('ramda/src/keys')
 const assoc = require('ramda/src/assoc')
 const arrayOf = require('ramda/src/of')
 const tryCatch = require('ramda/src/tryCatch')
@@ -58,7 +59,14 @@ const WithSymbols = pipe(
         })
       }
 
-      const guard = (key, value, options = {}) => {
+      const set = (key, value, options = {}) => {
+
+        if (isPlainObj(key)) {
+          return keys(key).map(k => {
+
+            return Component.set(k, key[k])
+          })
+        }
 
         if (Component.has(key))
           return
@@ -71,12 +79,10 @@ const WithSymbols = pipe(
           )),
           ensureArray,
           map(pipe(
-            when(both(isArray, propEq('length', 2)),
-              ([factory, options]) => ({
-                factory,
-                options
-              })
-            ),
+            when(isArray, ([factory, options]) => ({
+              factory,
+              options
+            })),
             unless(isPlainObj, objOf('factory')),
             over(lensProp('factory'), unless(isFunction,
               v => tryCatch(Component.get, err => {
@@ -103,7 +109,7 @@ const WithSymbols = pipe(
       return Object.assign(
         Component,
         Store({
-          guard,
+          guard: set,
           assert
         }),
         {
