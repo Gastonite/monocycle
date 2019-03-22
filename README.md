@@ -1,3 +1,3 @@
 # monocycle
 
-[moved](https://gitlab.com/monocycle/monocycle)
+moved to https://gitlab.com/monocycle/monocycle
